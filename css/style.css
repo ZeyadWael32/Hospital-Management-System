@@ -1,0 +1,10 @@
+html, body, main {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.home-page {
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+}

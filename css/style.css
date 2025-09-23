@@ -8,3 +8,169 @@ html, body, main {
     background: url("../img/background.png") no-repeat center center fixed;
     background-size: cover;
 }
+
+.login-page {
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+/* ============ Register Page Styles ============ */
+/* Center the register form vertically and horizontally */
+.register-page {
+    display: flex;
+    align-items: center; /* vertical center */
+    justify-content: center; /* horizontal center */
+    min-height: 100vh; /* ensure it fills viewport for perfect centering */
+    padding: 2rem 0;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* Make the card container narrower on desktop and remove extra top/bottom spacing for alerts */
+.register-page .container.card {
+    max-width: 720px; 
+    width: 90%;
+    padding: 1.5rem;
+    /* translucent blue card look */
+    background: rgba(10, 55, 120, 0.55) !important;
+    color: #fff !important; /* make text readable on dark translucent bg */
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25) !important;
+    backdrop-filter: blur(6px) !important;
+    border-radius: 12px;
+}
+
+/* make inputs readable on the translucent card */
+.register-page .container.card input.form-control {
+    background: rgba(255,255,255,0.18) !important; /* light translucent background */
+    color: #fff !important; /* white text for contrast on blue card */
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    backdrop-filter: none !important;
+}
+
+.register-page .container.card input.form-control::placeholder {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.register-page .container.card input.form-control:focus {
+    background: rgba(255,255,255,0.22) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.15rem rgba(111,163,216,0.25) !important;
+    border-color: rgba(255,255,255,0.18) !important;
+}
+
+.register-page .container.card .btn-primary {
+    background-color: #1e73be !important;
+    border-color: #155a9a !important;
+}
+
+/* ensure primary button shows hover/focus states inside the card */
+.register-page .container.card .btn-primary {
+    transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+.register-page .container.card button.btn.btn-primary:hover,
+.register-page .container.card .btn.btn-primary:hover,
+.register-page .container.card .btn.btn-primary:focus {
+    background-color: #155a9a !important; /* slightly darker */
+    border-color: #0f4773 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18) !important;
+}
+.register-page .container.card .btn-primary:active {
+    transform: translateY(0) scale(0.995);
+}
+
+/* unify title and small UI elements inside the card */
+.register-page .container.card .text-center.h2 {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.06);
+    color: #fff !important;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+/* ensure inline labels/text in the form are visible and aligned */
+.register-page .container.card {
+    line-height: 1.4;
+}
+.register-page .container.card input.form-control {
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+.register-page .container.card button.btn {
+    border-radius: 6px;
+    padding: 0.45rem 0.9rem;
+}
+
+/* make sure the button isn't covered and accepts pointer events */
+.register-page .container.card button.btn.btn-primary,
+.register-page .container.card .btn.btn-primary {
+    pointer-events: auto !important;
+    z-index: 3; /* above potential overlays */
+}
+
+/* Shared button behavior: apply consistent transitions and interaction for primary and secondary */
+.register-page .container.card .btn {
+    transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+    pointer-events: auto !important;
+    z-index: 3;
+    -webkit-tap-highlight-color: transparent;
+}
+.register-page .container.card .btn:hover,
+.register-page .container.card .btn:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.16) !important;
+}
+.register-page .container.card .btn:active {
+    transform: translateY(0) scale(0.995);
+}
+
+
+/* Apply same translucent + interactive rules to the reset/secondary button */
+.register-page .container.card .btn-secondary {
+    background-color: rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+.register-page .container.card .btn-secondary:hover,
+.register-page .container.card .btn-secondary:focus {
+    background-color: rgba(255,255,255,0.12) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12) !important;
+}
+.register-page .container.card .btn-secondary:active {
+    transform: translateY(0) scale(0.995);
+}
+.register-page .container.card .btn.btn-secondary {
+    pointer-events: auto !important;
+    z-index: 3;
+}
+
+/* alerts radius and spacing to match card */
+.register-page .container.card .alert {
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+}
+
+.register-page .alert {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+/* translucent alerts inside the register card */
+.register-page .container.card .alert {
+    background: rgba(255,255,255,0.12); /* light translucent base */
+    color: #fff; /* keep text white for contrast */
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.register-page .container.card .alert-danger {
+    background: rgba(200, 60, 60, 0.12);
+}
+
+.register-page .container.card .alert-success {
+    background: rgba(80, 180, 120, 0.12);
+}
+

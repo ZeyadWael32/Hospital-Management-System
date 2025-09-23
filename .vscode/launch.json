@@ -2,10 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch index.php",
+            "name": "Launch register.php",
             "type": "php",
             "request": "launch",
-            "program": "${workspaceFolder}/index.php",
+            "program": "${workspaceFolder}/register.php",
             "cwd": "${workspaceFolder}",
             "port": 9003,
             "runtimeArgs": [
@@ -51,7 +51,7 @@
             "cwd": "${workspaceRoot}",
             "port": 9003,
             "serverReadyAction": {
-                "pattern": "Development Server \\(http://localhost:([0-9]+)\\) started",
+                "pattern": "Development Server \\\u0028http://localhost:([0-9]+)\\\u0029 started",
                 "uriFormat": "http://localhost:%s",
                 "action": "openExternally"
             }
@@ -71,8 +71,8 @@
       "port": 9003,
       "serverReadyAction": {
         "action": "openExternally",
-        "pattern": "Development Server \\(http://localhost:([0-9]+)\\) started",
-        "uriFormat": "http://localhost:%s/db.php"
+        "pattern": "Development Server \\\u0028http://localhost:([0-9]+)\\\u0029 started",
+        "uriFormat": "http://localhost:%s/register.php"
       },
       "pathMappings": {
         "${workspaceFolder}": "/"

@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
     $email = trim($_POST["email"]);
     $password = $_POST["password"];
 
-    $user = login_user($conn, $email, $password);
+    $user = user_login($conn, $email, $password);
 
     if ($user) {
         $_SESSION["user_id"] = $user["id"];

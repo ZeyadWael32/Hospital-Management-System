@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
         $message = "<div class='alert alert-danger'>❌ Date of birth cannot be in the future.</div>";
 
     } else {
-        $new_user_id = register_user($conn, $name, $email, $password, $gender); // Insert user and get user ID
+        $new_user_id = user_register($conn, $name, $email, $password, $gender); 
 
         if ($new_user_id) {
-            if (register_patient($conn, $new_user_id, $phone, $date_of_birth, $address)) {
+            if (patient_register($conn, $new_user_id, $phone, $date_of_birth, $address)) {
             $_SESSION["user_id"] = $new_user_id;
             $_SESSION["role"] = "patient";
                 $message = "<div class='alert alert-success'>✅ Registration successful! Redirecting...</div>";

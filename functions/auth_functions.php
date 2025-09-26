@@ -18,7 +18,7 @@ function reg_email_check($conn, $email) {
     }
 }
 
-function register_user($conn, $name, $email, $password, $gender, $role = 'patient') {
+function user_register($conn, $name, $email, $password, $gender, $role = 'patient') {
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
     $register_sql = "INSERT INTO users (name, email, password, gender, role) VALUES (?, ?, ?, ?, ?)";
     if ($insert_stmt = mysqli_prepare($conn, $register_sql)) {
@@ -35,7 +35,7 @@ function register_user($conn, $name, $email, $password, $gender, $role = 'patien
         return false; // Preparation failed
     }
 }
-function register_patient($conn, $user_id, $phone, $date_of_birth, $address) {
+function patient_register($conn, $user_id, $phone, $date_of_birth, $address) {
     $register_sql = "INSERT INTO patients (user_id, phone, dob, address) VALUES (?, ?, ?, ?)";
     if ($insert_stmt = mysqli_prepare($conn, $register_sql)) {
         mysqli_stmt_bind_param($insert_stmt, "isss", $user_id, $phone, $date_of_birth, $address);
@@ -51,7 +51,7 @@ function register_patient($conn, $user_id, $phone, $date_of_birth, $address) {
     }
 }
 /* Login functions */
-function login_user($conn, $email, $password) {
+function user_login($conn, $email, $password) {
     $login_sql = "SELECT id, email, password, role FROM users WHERE email = ?";
     if ($login_stmt = mysqli_prepare($conn, $login_sql)) {
         mysqli_stmt_bind_param($login_stmt, "s", $email);

@@ -1,20 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const homeRedirect = document.getElementById('home-redirect');
-    const dashboardRedirect = document.getElementById('dashboard-redirect');
-    if (homeRedirect) {
-        const homeUrl = homeRedirect.dataset.url;
-        if (homeUrl) {
-            setTimeout(() => {
-                window.location.href = homeUrl;
-            }, 3000);
+    function delayedRedirect(elementId, delay = 2000) {
+        const element = document.getElementById(elementId);
+        if (element) {
+            const url = element.dataset.url;
+            if (url) {
+                setTimeout(() => {
+                    window.location.href = url;
+                }, delay);
+            }
         }
     }
-    if (dashboardRedirect) {
-        const dashboardUrl = dashboardRedirect.dataset.url;
-        if (dashboardUrl) {
-            setTimeout(() => {
-                window.location.href = dashboardUrl;
-            }, 3000);
-        }
-    }
+
+    delayedRedirect('home-redirect');
+    delayedRedirect('dashboard-redirect');
 });
+
+

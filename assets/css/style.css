@@ -14,13 +14,21 @@ html, body, main {
 }
 
     .home-page {
-        display: flex;
-        align-items: center; /* vertical center */
-        justify-content: center; /* horizontal center */
-        min-height: 100vh; /* ensure it fills viewport for perfect centering */
-        padding: 2rem 0;
-    background: url("../img/home-bg.jpg") no-repeat center center fixed;
+        position: relative; /* allow absolute centering of the card */
+        min-height: 100vh; /* ensure it fills viewport */
+        background: url("../img/home-bg.jpg") no-repeat center center fixed;
         background-size: cover;
+    }
+
+    .home-page .container.card {
+        /* center the card without affecting other children (like navbar) */
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2rem;
+        max-width: 980px;
+        width: 94%;
     }
 
     /* ============ Authentication Pages Styles ============ */
@@ -31,7 +39,7 @@ html, body, main {
         justify-content: center; /* horizontal center */
         min-height: 100vh; /* ensure it fills viewport for perfect centering */
         padding: 2rem 0;
-    background: url("../img/background.png") no-repeat center center fixed;
+        background: url("../img/background.png") no-repeat center center fixed;
         background-size: cover;
     }
 

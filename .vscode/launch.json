@@ -72,7 +72,7 @@
       "serverReadyAction": {
         "action": "openExternally",
         "pattern": "Development Server \\\u0028http://localhost:([0-9]+)\\\u0029 started",
-        "uriFormat": "http://localhost:%s/pages/register.php"
+        "uriFormat": "http://localhost:%s/auth/register.php"
       },
       "pathMappings": {
         "${workspaceFolder}": "/"

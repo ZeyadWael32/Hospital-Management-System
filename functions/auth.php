@@ -52,18 +52,19 @@ function patient_register($conn, $user_id, $phone, $date_of_birth, $address) {
 }
 /* Login functions */
 function user_login($conn, $email, $password) {
-    $login_sql = "SELECT id, email, password, role FROM users WHERE email = ?";
+    $login_sql = "SELECT id, name, email, password, role FROM users WHERE email = ?";
     if ($login_stmt = mysqli_prepare($conn, $login_sql)) {
         mysqli_stmt_bind_param($login_stmt, "s", $email);
         if (mysqli_stmt_execute($login_stmt)) {
             mysqli_stmt_store_result($login_stmt);
             if (mysqli_stmt_num_rows($login_stmt) == 1) {
-                mysqli_stmt_bind_result($login_stmt, $fetched_id, $fetched_email, $fetched_hashed_password, $fetched_role);
+                mysqli_stmt_bind_result($login_stmt, $fetched_id, $fetched_name, $fetched_email, $fetched_hashed_password, $fetched_role);
                 if (mysqli_stmt_fetch($login_stmt)) {
                     if (password_verify($password, $fetched_hashed_password)) {
-                        mysqli_stmt_close(statement: $login_stmt);
+                        mysqli_stmt_close($login_stmt);
                         return [
                             "id" => $fetched_id,
+                            "name" => $fetched_name,
                             "email" => $fetched_email,
                             "role" => $fetched_role
                         ]; // Login successful

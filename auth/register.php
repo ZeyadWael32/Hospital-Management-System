@@ -1,9 +1,10 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ .'/../functions/auth.php';
+
 $title = "Register";
 include __DIR__ . '/../includes/header.php';
-require __DIR__ . '/../config/db.php';
-require __DIR__ . '/../functions/auth_functions.php';
+
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
     $name = trim($_POST["name"]);

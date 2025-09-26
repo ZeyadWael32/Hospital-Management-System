@@ -1,9 +1,10 @@
 <?php
-session_start();
+require_once __DIR__ . '/../includes/init.php';
+require_once __DIR__ .'/../functions/auth.php';
+
 $title = "Login";
 include __DIR__ . '/../includes/header.php';
-require __DIR__ . '/../config/db.php';
-require __DIR__ . '/../functions/auth_functions.php';
+
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
     $email = trim($_POST["email"]);
@@ -13,18 +14,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
 
     if ($user) {
         $_SESSION["user_id"] = $user["id"];
+        $_SESSION["name"] = $user["name"];
         $_SESSION["email"] = $user["email"];
         $_SESSION["role"] = $user["role"];
 
         switch ($user["role"]) {
             case "admin":
-                $redirect_url = "../index.php";
+                $redirect_url = "../admin/dashboard.php";
                 break;
             case "doctor":
-                $redirect_url = "../index.php";
+                $redirect_url = "../doctor/dashboard.php";
                 break;
             case "patient":
-                $redirect_url = "../index.php";
+                $redirect_url = "../patient/dashboard.php";
                 break;
             default:
                 $redirect_url = "../index.php";

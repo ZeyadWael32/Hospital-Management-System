@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
                 $redirect_url = "../index.php";
         }
 
-        $message = "<div class='alert alert-success'>✅ Login successful! Redirecting...</div>";
+        $message = "<div class='alert alert-success'>✅ Login successful! Redirecting... <div class='spinner-border-sm' role='status'><span class='visually-hidden'>Loading...</span></div></div>";
     } else {
         $message = "<div class='alert alert-danger'>❌ Invalid email or password.</div>";
     }

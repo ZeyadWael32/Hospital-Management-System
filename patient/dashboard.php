@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
 
+require_login();
+required_role(['patient','doctor','admin']);
+
+
 $title = 'Patient Dashboard';
 include __DIR__ . '/../includes/header.php';
 
-require_login();
-required_role(['patient','doctor','admin']);
+
 
 $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
 ?>
@@ -16,6 +19,7 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
             Patient Dashboard
         </div>
         <p class="text-center">Welcome, patient <?= $first_name ?>!</p>
+        <a href="profile.php" class="btn btn-primary">View Profile</a>
     </div>
 </main>
 

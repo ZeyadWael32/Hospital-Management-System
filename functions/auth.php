@@ -2,15 +2,15 @@
 /* Register functions */
 function reg_email_check($conn, $email) {
     $email_check_sql = "SELECT id FROM users WHERE email = ?";
-    if ($email_check_stmt = mysqli_prepare($conn, $email_check_sql)) {
-        mysqli_stmt_bind_param($email_check_stmt, "s", $email);
-        if (mysqli_stmt_execute($email_check_stmt)) {
-            mysqli_stmt_store_result($email_check_stmt);
-            $is_registered = mysqli_stmt_num_rows($email_check_stmt) > 0;
-            mysqli_stmt_close($email_check_stmt);
+    if ($stmt = mysqli_prepare($conn, $email_check_sql)) {
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_store_result($stmt);
+            $is_registered = mysqli_stmt_num_rows($stmt) > 0;
+            mysqli_stmt_close($stmt);
             return $is_registered;
         } else {
-            mysqli_stmt_close($email_check_stmt);
+            mysqli_stmt_close($stmt);
             return false; // Execution failed
         }
     } else {
@@ -21,14 +21,14 @@ function reg_email_check($conn, $email) {
 function user_register($conn, $name, $email, $password, $gender, $role = 'patient') {
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
     $register_sql = "INSERT INTO users (name, email, password, gender, role) VALUES (?, ?, ?, ?, ?)";
-    if ($insert_stmt = mysqli_prepare($conn, $register_sql)) {
-        mysqli_stmt_bind_param($insert_stmt, "sssss", $name, $email, $hashed_password, $gender, $role);
-        if (mysqli_stmt_execute($insert_stmt)) {
+    if ($stmt = mysqli_prepare($conn, $register_sql)) {
+        mysqli_stmt_bind_param($stmt, "sssss", $name, $email, $hashed_password, $gender, $role);
+        if (mysqli_stmt_execute($stmt)) {
             $user_id = mysqli_insert_id($conn);
-            mysqli_stmt_close($insert_stmt);
+            mysqli_stmt_close($stmt);
             return $user_id;
         } else {
-            mysqli_stmt_close($insert_stmt);
+            mysqli_stmt_close($stmt);
             return false; // Execution failed
         }
     } else {
@@ -37,13 +37,13 @@ function user_register($conn, $name, $email, $password, $gender, $role = 'patien
 }
 function patient_register($conn, $user_id, $phone, $date_of_birth, $address) {
     $register_sql = "INSERT INTO patients (user_id, phone, dob, address) VALUES (?, ?, ?, ?)";
-    if ($insert_stmt = mysqli_prepare($conn, $register_sql)) {
-        mysqli_stmt_bind_param($insert_stmt, "isss", $user_id, $phone, $date_of_birth, $address);
-        if (mysqli_stmt_execute($insert_stmt)) {
-            mysqli_stmt_close($insert_stmt);
+    if ($stmt = mysqli_prepare($conn, $register_sql)) {
+        mysqli_stmt_bind_param($stmt, "isss", $user_id, $phone, $date_of_birth, $address);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
             return true;
         } else {
-            mysqli_stmt_close($insert_stmt);
+            mysqli_stmt_close($stmt);
             return false; // Execution failed
         }
     } else {

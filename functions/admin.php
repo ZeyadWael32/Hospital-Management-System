@@ -1,25 +1,18 @@
 <?php
-function get_patient_info($conn, $id) {
-    $sql = "
-    SELECT
-        u.name, u.email, u.gender,
-        p.phone, p.dob, p.address
-    FROM users u
-    INNER JOIN patients p ON u.id = p.user_id
-    WHERE u.id = ?
-    ";
+function get_admin_info($conn, $id) {
+    $sql = "SELECT name, email, gender FROM users WHERE id = ?";
 
     if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_bind_param($stmt,"i", $id);
         if (mysqli_stmt_execute($stmt)) {
             $result = mysqli_stmt_get_result($stmt);
             if ($result && mysqli_num_rows($result) == 1) {
-                $patient = mysqli_fetch_assoc($result);
+                $admin = mysqli_fetch_assoc($result);
                 mysqli_stmt_close($stmt);
-                return $patient;
+                return $admin;
             } else {
                 mysqli_stmt_close($stmt);
-                return null; // No patient found
+                return null; // No admin found
             }
         } else {
             mysqli_stmt_close($stmt);

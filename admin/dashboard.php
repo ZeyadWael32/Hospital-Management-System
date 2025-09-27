@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
-$title = "Admin Dashboard";
-include __DIR__ . '/../includes/header.php';
 
 require_login();
 required_role(['admin']);
+
+$title = "Admin Dashboard";
+include __DIR__ . '/../includes/header.php';
 
 $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION["name"])));
 
@@ -14,7 +15,9 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION["name"])));
         <div class="text-center h2">
             Admin Dashboard
         </div>
-        <p class="text-center">Welcome, admin <?= $first_name ?>!</p>
+        <p class="text-center">Welcome, <?= $first_name ?>!</p>
+        <a href="profile.php" class="btn btn-primary">View Profile</a>
     </div>
 </main>
+
 <?php include __DIR__ . '/../includes/footer.php'; ?>

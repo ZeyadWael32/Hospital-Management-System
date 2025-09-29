@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
     $email = strtolower(trim($_POST["email"]));
     $password = $_POST["password"];
     $confirm_password = $_POST["confirm_password"];
-    $phone = $_POST["phone"];
+    $phone = trim($_POST["phone"]);
     $gender = $_POST["gender"];
     $date_of_birth = $_POST["dob"];
     $address = trim($_POST["address"]);
@@ -54,7 +54,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["submit"])) {
     <div class="text-center h2">
         Register
     </div>
-        <?php if (!empty($message)) { echo $message; } ?>
+        <?php if (!empty($message)) { 
+            echo $message; 
+        } ?>
   <form method="post">
     <div class="mb-2">
         <label class="form-label">Name</label>

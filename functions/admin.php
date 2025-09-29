@@ -22,4 +22,21 @@ function get_admin_info($conn, $id) {
         return null; // Preparation failed
     }
 }
+
+function update_admin_info($conn, $name, $email, $id) {
+    $sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "ssi", $name, $email, $id);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return true; // Update successful
+        } else {
+            mysqli_stmt_close($stmt);
+            return false; // Execution failed
+        }
+    } else {
+        return false; // Preparation failed
+    }
+}
 ?>

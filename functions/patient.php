@@ -29,4 +29,27 @@ function get_patient_info($conn, $id) {
         return null; // Preparation failed
     }
 }
+
+function update_patient_info($conn, $name, $email, $phone, $dob, $address, $id) {
+    
+    $sql = "
+    UPDATE users u
+    INNER JOIN patients p ON u.id = p.user_id
+    SET u.name = ?, u.email = ?, p.phone = ?, p.dob = ?, p.address = ?
+    WHERE u.id = ?
+    ";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "sssssi", $name, $email, $phone, $dob, $address, $id);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_close($stmt);
+            return true; // Update successful
+        } else {
+            mysqli_stmt_close($stmt);
+            return false; // Execution failed
+        }
+    } else {
+        return false; // Preparation failed
+    }
+}
 ?>

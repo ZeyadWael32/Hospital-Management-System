@@ -1,18 +1,28 @@
-document.addEventListener('DOMContentLoaded', () => {
-    function delayedRedirect(elementId, delay = 2000) {
-        const element = document.getElementById(elementId);
-        if (element) {
-            const url = element.dataset.url;
-            if (url) {
-                setTimeout(() => {
-                    window.location.href = url;
-                }, delay);
-            }
+function delayedRedirect(elementId, delay) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        const url = element.dataset.url;
+        if (url) {
+            setTimeout(() => {
+                window.location.href = url;
+            }, delay);
         }
     }
+}
 
-    delayedRedirect('home-redirect');
-    delayedRedirect('dashboard-redirect');
+function showModal(modalId) {
+    if (window.showProfileModal) {
+        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    delayedRedirect('home-redirect', 2000);
+    delayedRedirect('dashboard-redirect', 2000);
+    
+    showModal('editProfileModal');
 });
 
 

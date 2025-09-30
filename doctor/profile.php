@@ -1,39 +1,86 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ .'/../functions/doctor.php';
+require_once __DIR__ .'/../functions/profile.php';
 
 require_login();
 required_role(['doctor','admin']);
 
-if (isset($_POST['update_profile']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name']) ?? '';
-    $email = strtolower(trim($_POST['email'])) ?? '';
-    $phone = trim($_POST['phone']) ?? '';
-    $specialty = trim($_POST['specialty']) ?? '';
+// Read and clear one-time flash and modal state
+$flash = get_and_clear_session('flash');
+$open_modal = get_and_clear_session('open_modal');
+$modal_errors = get_and_clear_session('modal_errors', []);
+$profile_errors = $modal_errors['profile'] ?? [];
+$password_errors = $modal_errors['password'] ?? [];
 
-    $errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if (empty($name)) {
-        $errors[] = "❌ Name is required.";
-    }
-    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "❌ A valid email is required.";
-    }
-    if (empty($phone)) {
-        $errors[] = "❌ Phone number is required.";
-    }
-    if (empty($specialty)) {
-        $errors[] = "❌ Specialty is required.";
-    }
+if (isset($_POST['update_profile'])) {
+  $name = trim($_POST['name'] ?? '');
+  $email = strtolower(trim($_POST['email'] ?? ''));
+  $phone = trim($_POST['phone'] ?? '');
+  $specialty = trim($_POST['specialty'] ?? '');
 
-    if (empty($errors)) {
-        if (update_doctor_info($conn, $name, $email, $phone, $specialty, $_SESSION['user_id'])) {
-            header('Location: profile.php?success=1');
-            exit;
-        } else {
-            $errors[] = "❌ Failed to update profile. Please try again.";
-        }
+  $profile_errors = [];
+  if (empty($name)) {
+    $profile_errors[] = "❌ Name is required.";
+  }
+  if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $profile_errors[] = "❌ A valid email is required.";
+  }
+  if (empty($phone)) {
+    $profile_errors[] = "❌ Phone number is required.";
+  }
+  if (empty($specialty)) {
+    $profile_errors[] = "❌ Specialty is required.";
+  }
+
+  if (!empty($profile_errors)) {
+    $_SESSION['modal_errors'] = ['profile' => $profile_errors];
+    $_SESSION['flash'] = ['type' => 'error', 'message' => '❌ Failed to update profile. Please try again.'];
+    $_SESSION['open_modal'] = 'profile';
+    header('Location: profile.php');
+    exit;
+  }
+
+  if (update_doctor_info($conn, $name, $email, $phone, $specialty, $_SESSION['user_id'])) {
+    $_SESSION['flash'] = ['type' => 'success', 'message' => '✅ Profile updated successfully.'];
+    header('Location: profile.php');
+    exit;
+  } else {
+    $_SESSION['modal_errors'] = ['profile' => ['❌ Failed to update profile. Please try again.']];
+    $_SESSION['flash'] = ['type' => 'error', 'message' => '❌ Failed to update profile. Please try again.'];
+    $_SESSION['open_modal'] = 'profile';
+    header('Location: profile.php');
+    exit;
+  }
+}
+
+if (isset($_POST['change_password'])) {
+  $current = $_POST['current_password'] ?? '';
+  $new = $_POST['new_password'] ?? '';
+  $confirm = $_POST['confirm_password'] ?? '';
+  $errors = [];
+
+  if (!$current || !$new || !$confirm) $errors[] = "❌ All password fields are required.";
+  elseif ($new !== $confirm) $errors[] = "❌ New passwords do not match.";
+
+  if ($errors) {
+    $_SESSION['modal_errors'] = ['password' => $errors];
+    $_SESSION['flash'] = ['type' => 'error', 'message' => '❌ Failed to change password. Please try again.'];
+    $_SESSION['open_modal'] = 'password';
+  } else {
+    if (change_password($conn, $_SESSION['user_id'], $current, $new)) {
+      $_SESSION['flash'] = ['type' => 'success', 'message' => '✅ Password changed successfully.'];
+    } else {
+      $_SESSION['modal_errors'] = ['password' => ['❌ Current password is incorrect or failed to change password.']];
+      $_SESSION['flash'] = ['type' => 'error', 'message' => '❌ Failed to change password. Please try again.'];
+      $_SESSION['open_modal'] = 'password';
     }
+  }
+  header('Location: profile.php');
+  exit;
+  }
 }
 
 if (isset($_GET['doctor_id']) && $_SESSION['role'] === 'admin') {
@@ -53,9 +100,11 @@ include __DIR__ . '/../includes/header.php';
 
 <main class="container mt-5">
     <div class="card shadow p-4">
-        <?php if (isset($_GET['success']) && $_GET['success'] == 1): ?>
-            <div class="alert alert-success">✅ Profile updated successfully.</div>
-            <?php endif; ?>
+        <?php if (!empty($flash)): ?>
+          <div class="alert alert-<?= ($flash['type'] === 'success') ? 'success' : 'danger' ?>">
+            <?= htmlspecialchars($flash['message']) ?>
+          </div>
+        <?php endif; ?>
         <h2 class="text-center">My Profile</h2>
         <p><strong>Name:</strong> <?= htmlspecialchars($info['name']) ?></p>
         <p><strong>Email:</strong> <?= htmlspecialchars($info['email']) ?></p>
@@ -63,51 +112,13 @@ include __DIR__ . '/../includes/header.php';
         <p><strong>Specialty:</strong> <?= htmlspecialchars($info['specialty']) ?></p>
         <p><strong>Gender:</strong> <?= htmlspecialchars($info['gender']) ?></p>
 
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
-
-        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <form method="POST">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php
-                    if (!empty($errors)) {
-                        foreach ($errors as $error) {
-                            echo "<div class='alert alert-danger'>$error</div>";
-                        }
-                    }
-                    ?>
-                  <div class="mb-3">
-                    <label for="doctor-name" class="col-form-label">Name:</label>
-                    <input type="text" class="form-control" id="doctor-name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? $info['name']) ?>">
-                  </div>
-                  <div class="mb-3">
-                    <label for="doctor-email" class="col-form-label">Email:</label>
-                    <input type="email" class="form-control" id="doctor-email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? $info['email']) ?>">
-                  </div>
-                  <div class="mb-3">
-                    <label for="doctor-phone" class="col-form-label">Phone:</label>
-                    <input type="text" class="form-control" id="doctor-phone" name="phone" value="<?= htmlspecialchars($_POST['phone'] ?? $info['phone']) ?>">
-                  </div>
-                  <div class="mb-3">
-                    <label for="doctor-specialty" class="col-form-label">Specialty:</label>
-                    <input type="text" class="form-control" id="doctor-specialty" name="specialty" value="<?= htmlspecialchars($_POST['specialty'] ?? $info['specialty']) ?>">
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary" name="update_profile">Save changes</button>
-              </form>
-            </div>
-          </div>
-        </div>
-    </div>
+        <?php
+         include __DIR__ . '/../includes/edit_profile_modal.php'; 
+         include __DIR__ . '/../includes/change_password_modal.php';
+         ?>
   <script>
-    window.showProfileModal = <?= !empty($errors) ? 'true' : 'false'; ?>;
+    window.showProfileModal = <?= ($open_modal === 'profile') ? 'true' : 'false'; ?>;
+    window.showPasswordModal = <?= ($open_modal === 'password') ? 'true' : 'false'; ?>;
   </script>
 </main>
 

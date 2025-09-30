@@ -82,4 +82,5 @@ function user_login($conn, $email, $password) {
     }
     return false; // Preparation or execution failed
 }
+
 ?>

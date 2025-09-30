@@ -10,8 +10,15 @@ function delayedRedirect(elementId, delay) {
     }
 }
 
-function showModal(modalId) {
+function showProfileModal(modalId) {
     if (window.showProfileModal) {
+        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+    }
+}
+
+function showPasswordModal(modalId) {
+    if (window.showPasswordModal) {
         const modal = new bootstrap.Modal(document.getElementById(modalId));
         modal.show();
     }
@@ -21,8 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     delayedRedirect('home-redirect', 2000);
     delayedRedirect('dashboard-redirect', 2000);
-    
-    showModal('editProfileModal');
 });
 
 

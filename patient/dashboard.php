@@ -8,8 +8,6 @@ required_role(['patient','doctor','admin']);
 $title = 'Patient Dashboard';
 include __DIR__ . '/../includes/header.php';
 
-
-
 $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
 ?>
 
@@ -20,6 +18,7 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
         </div>
         <p class="text-center">Welcome, patient <?= $first_name ?>!</p>
         <a href="profile.php" class="btn btn-primary">View Profile</a>
+        <a href="book_appointment.php" class="btn btn-success">Book Appointment</a>
     </div>
 </main>
 

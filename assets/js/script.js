@@ -28,6 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     delayedRedirect('home-redirect', 2000);
     delayedRedirect('dashboard-redirect', 2000);
+
+
+    if (window.history.replaceState) {
+        const url = new URL(window.location.href);
+
+        url.searchParams.delete('success');
+        url.searchParams.delete('error');
+
+        window.history.replaceState({}, '', url.toString());
+    }
 });
 
 

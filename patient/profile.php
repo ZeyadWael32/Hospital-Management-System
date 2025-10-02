@@ -6,7 +6,6 @@ require_once __DIR__ . '/../functions/profile.php';
 require_login();
 required_role(['patient','admin']);
     
-
 $flash = get_and_clear_session('flash');
 $open_modal = get_and_clear_session('open_modal');
 $modal_errors = get_and_clear_session('modal_errors', []);

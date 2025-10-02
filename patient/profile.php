@@ -86,11 +86,12 @@ include __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
         <h2 class="text-center">My Profile</h2>
-        <p><strong>Name:</strong> <?= htmlspecialchars($info['name']) ?></p>
-        <p><strong>Email:</strong> <?= htmlspecialchars($info['email']) ?></p>
-        <p><strong>Phone:</strong> <?= htmlspecialchars($info['phone']) ?></p>
-        <p><strong>Date of Birth:</strong> <?= htmlspecialchars($info['dob']) ?></p>
-        <p><strong>Address:</strong> <?= htmlspecialchars($info['address']) ?></p>
+        <p><strong>Name:</strong> <?= htmlspecialchars($_POST['name'] ?? $info['name']) ?></p>
+        <p><strong>Email:</strong> <?= htmlspecialchars($_POST['email'] ?? $info['email']) ?></p>
+        <p><strong>Phone:</strong> <?= htmlspecialchars($_POST['phone'] ?? $info['phone']) ?></p>
+        <p><strong>Date of Birth:</strong> <?= htmlspecialchars($_POST['dob'] ?? $info['dob']) ?></p>
+        <p><strong>Age:</strong> <?= htmlspecialchars(calculate_age($_POST['dob'] ?? $info['dob'])) ?> years</p>
+        <p><strong>Address:</strong> <?= htmlspecialchars($_POST['address'] ?? $info['address']) ?></p>
 
         <?php 
             include __DIR__ . '/../includes/edit_profile_modal.php';

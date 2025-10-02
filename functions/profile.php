@@ -50,4 +50,18 @@ function change_password($conn, $user_id, $current_password, $new_password) {
     }
     return false; // Preparation or execution failed
 }
+
+function calculate_age($dob) {
+    if ($dob) {
+        $birthDate = strtotime($dob);
+        $age = date('Y') - date('Y', $birthDate);
+
+        if (date('md', $birthDate) > date('md', time())) {
+            $age--;
+        }
+        return $age;
+    } else {
+        return null;
+    }
+}
 ?>

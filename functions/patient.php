@@ -112,15 +112,6 @@ function get_doctors($conn) {
     return $doctors;
 }
 
-function validate_appointment_datetime($datetime) {
-    $now = new DateTime();
-    $selected = new DateTime($datetime);
-    if ($selected < $now) {
-        return false;
-    }
-    return true;
-}
-
 function get_patient_appointments($conn, $patient_id) {
     $sql = "
     SELECT a.id, u.name AS doctor_name, d.specialty, a.appointment_datetime, a.status

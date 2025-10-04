@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../functions/patient.php';
+require_once __DIR__ . '/../functions/helpers.php';
 
 require_login();
 required_role(['patient','admin']);
@@ -52,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// --- MESSAGES ---
 $message = '';
 $alertClass = 'alert-success';
 
@@ -72,7 +72,7 @@ if (isset($_GET['success'])) {
         case '5': $message = '❌ Unable to identify patient. Please log in again.'; break;
         default: $message = '';
     }
-}
+}   
 
 $title = "Book Appointment";
 include __DIR__ . '/../includes/header.php';
@@ -129,7 +129,7 @@ include __DIR__ . '/../includes/header.php';
                     echo "<td>" . htmlspecialchars($appt['doctor_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($appt['specialty']) . "</td>";
                     echo "<td>" . htmlspecialchars(date('Y-m-d H:i', strtotime($appt['appointment_datetime']))) . "</td>";
-                    echo "<td>" . htmlspecialchars(ucfirst($appt['status'])) . "</td>";
+                    echo "<td>" . get_status_badge($appt['status'], $appt['appointment_datetime']) . "</td>";
                     echo "<td>";
                     if ($appt['status'] === 'pending') {
                         echo "<form method='post' style='display:inline;'>

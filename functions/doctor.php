@@ -50,4 +50,95 @@ function update_doctor_info($conn, $name, $email, $phone, $speciality, $id) {
         return false; // Preparation failed
     }
 }
+
+function get_doctor_id($conn, $user_id) {
+    $sql = "SELECT id FROM doctors WHERE user_id = ?";
+    
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $user_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            if ($result && mysqli_num_rows($result) == 1) {
+                $doctor = mysqli_fetch_assoc($result);
+                mysqli_stmt_close($stmt);
+                return $doctor['id'];
+            } else {
+                mysqli_stmt_close($stmt);
+                return null; // No doctor found
+            }
+        } else {
+            mysqli_stmt_close($stmt);
+            return null; // Execution failed
+        }
+    } else {
+        return null; // Preparation failed
+    }
+}
+
+function get_doctor_appointments($conn, $doctor_id) {
+    $sql = "
+    SELECT 
+        a.id, a.appointment_datetime, a.status,
+        u.name AS patient_name
+    FROM appointments a
+    INNER JOIN patients p ON a.patient_id = p.id
+    INNER JOIN users u ON p.user_id = u.id
+    WHERE a.doctor_id = ?
+    ORDER BY a.appointment_datetime ASC
+    ";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $appointments = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $appointments[] = $row;
+            }
+            mysqli_stmt_close($stmt);
+            return $appointments;
+        } else {
+            mysqli_stmt_close($stmt);
+            return []; // Execution failed
+        }
+    } else {
+        return []; // Preparation failed
+    }
+}
+
+function approve_appointment($conn, $appointment_id, $doctor_id) {
+    $sql = "UPDATE appointments SET status = 'approved' WHERE id = ? AND doctor_id = ? AND status = 'pending'";
+    
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "ii", $appointment_id, $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $affected_rows = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+            return $affected_rows > 0; // Return true if at least one row was updated
+        } else {
+            mysqli_stmt_close($stmt);
+            return false; // Execution failed
+        }
+    } else {
+        return false; // Preparation failed
+    }
+}
+
+function reject_appointment($conn, $appointment_id, $doctor_id) {
+    $sql = "UPDATE appointments SET status = 'cancelled' WHERE id = ? AND doctor_id = ? AND status = 'pending'";
+    
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "ii", $appointment_id, $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $affected_rows = mysqli_stmt_affected_rows($stmt);
+            mysqli_stmt_close($stmt);
+            return $affected_rows > 0; // Return true if at least one row was updated
+        } else {
+            mysqli_stmt_close($stmt);
+            return false; // Execution failed
+        }
+    } else {
+        return false; // Preparation failed
+    }
+}
 ?>

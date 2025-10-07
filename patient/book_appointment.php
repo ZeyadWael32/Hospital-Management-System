@@ -84,7 +84,7 @@ include __DIR__ . '/../includes/header.php';
             Book Appointment
         </div>
         <?php if ($message): ?>
-            <div class="alert <?= $alertClass ?? 'alert-info' ?> text-center">
+            <div class="alert <?= htmlspecialchars($alertClass ?? 'alert-info') ?> text-center">
                 <?= htmlspecialchars($message) ?>
             </div>
         <?php endif; ?>
@@ -126,26 +126,26 @@ include __DIR__ . '/../includes/header.php';
             if ($appointments) {
                 foreach ($appointments as $appt) {
                     echo "<tr>";
-                    echo "<td>" . htmlspecialchars($appt['doctor_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($appt['specialty']) . "</td>";
-                    echo "<td>" . htmlspecialchars(date('Y-m-d H:i', strtotime($appt['appointment_datetime']))) . "</td>";
-                    echo "<td>" . get_status_badge($appt['status'], $appt['appointment_datetime']) . "</td>";
-                    echo "<td>";
-                    if ($appt['status'] === 'pending') {
-                        echo "<form method='post' style='display:inline;'>
-                                <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
-                                <button type='submit' name='cancel_appointment' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to cancel this appointment?\")'>Cancel</button>
-                              </form>";
-                    } else {
-                        echo "N/A";
+                        echo "<td>" . htmlspecialchars($appt['doctor_name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($appt['specialty']) . "</td>";
+                        echo "<td>" . htmlspecialchars(date('Y-m-d H:i', strtotime($appt['appointment_datetime']))) . "</td>";
+                        echo "<td>" . get_status_badge($appt['status'], $appt['appointment_datetime']) . "</td>";
+                        echo "<td>";
+                        if ($appt['status'] === 'pending') {
+                            echo "<form method='post' style='display:inline;'>
+                                    <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
+                                    <button type='submit' name='cancel_appointment' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to cancel this appointment?\")'>Cancel</button>
+                                </form>";
+                        } else {
+                            echo "N/A";
+                        }
+                        echo "</td>";
+                        echo "</tr>";
                     }
-                    echo "</td>";
-                    echo "</tr>";
+                } else {
+                    echo "<tr><td colspan='5' class='text-center'>No appointments found.</td></tr>";
                 }
-            } else {
-                echo "<tr><td colspan='5' class='text-center'>No appointments found.</td></tr>";
-            }
-            ?>
+                ?>
         </tbody>
     </table>
 </main>

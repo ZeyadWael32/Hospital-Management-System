@@ -106,33 +106,19 @@ function get_doctor_appointments($conn, $doctor_id) {
     }
 }
 
-function approve_appointment($conn, $appointment_id, $doctor_id) {
-    $sql = "UPDATE appointments SET status = 'approved' WHERE id = ? AND doctor_id = ? AND status = 'pending'";
-    
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "ii", $appointment_id, $doctor_id);
-        if (mysqli_stmt_execute($stmt)) {
-            $affected_rows = mysqli_stmt_affected_rows($stmt);
-            mysqli_stmt_close($stmt);
-            return $affected_rows > 0; // Return true if at least one row was updated
-        } else {
-            mysqli_stmt_close($stmt);
-            return false; // Execution failed
-        }
-    } else {
-        return false; // Preparation failed
+function update_appointment_status($conn, $appointment_id, $status) {
+    $valid_statuses = ['approved', 'cancelled', 'completed'];
+    if (!in_array($status, $valid_statuses)) {
+        return false; // Invalid status
     }
-}
 
-function reject_appointment($conn, $appointment_id, $doctor_id) {
-    $sql = "UPDATE appointments SET status = 'cancelled' WHERE id = ? AND doctor_id = ? AND status = 'pending'";
+    $sql = "UPDATE appointments SET status = ? WHERE id = ?";
     
     if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "ii", $appointment_id, $doctor_id);
+        mysqli_stmt_bind_param($stmt, "si", $status, $appointment_id);
         if (mysqli_stmt_execute($stmt)) {
-            $affected_rows = mysqli_stmt_affected_rows($stmt);
             mysqli_stmt_close($stmt);
-            return $affected_rows > 0; // Return true if at least one row was updated
+            return true; // Update successful
         } else {
             mysqli_stmt_close($stmt);
             return false; // Execution failed

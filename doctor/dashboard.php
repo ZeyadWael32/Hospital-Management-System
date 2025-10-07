@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
             header('Location: dashboard.php?error=4'); // invalid appointment
             exit;
-        } elseif (approve_appointment($conn, $appointment_id, $doctor_id)) {
+        } elseif (update_appointment_status($conn, $appointment_id, 'approved')) {
             header('Location: dashboard.php?success=1'); // approved successfully
             exit;
         } else {
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
             header('Location: dashboard.php?error=4'); // invalid appointment
             exit;
-        } elseif (reject_appointment($conn, $appointment_id, $doctor_id)) {
+        } elseif (update_appointment_status($conn, $appointment_id, 'cancelled')) {
             header('Location: dashboard.php?success=2'); // rejected successfully
             exit;
         } else {
@@ -38,6 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+    if (isset($_POST['complete_appointment'])) {
+        $appointment_id = $_POST['appointment_id'] ?? '';
+
+        if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
+            header('Location: dashboard.php?error=4'); // invalid appointment
+            exit;
+        } elseif (update_appointment_status($conn, $appointment_id, 'completed')) {
+            header('Location: dashboard.php?success=3'); // completed successfully
+            exit;
+        } else {
+            header('Location: dashboard.php?error=3'); // complete failed / not found
+            exit;
+        }
+    }
+
 
 $message = '';
 $alertClass = 'alert-success';
@@ -46,6 +61,7 @@ if (isset($_GET['success'])) {
     switch ($_GET['success']) {
         case '1': $message = '✅ Appointment approved successfully.'; break;
         case '2': $message = '✅ Appointment rejected successfully.'; break;
+        case '3': $message = '✅ Appointment marked as completed successfully.'; break;
         default: $message = '';
     }
 } elseif (isset($_GET['error'])) {
@@ -103,6 +119,11 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
                                 <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
                                 <button type='submit' name='approve_appointment' value='approve' class='btn btn-success btn-sm me-1'>Approve</button>
                                 <button type='submit' name='reject_appointment' value='reject' class='btn btn-danger btn-sm'>Reject</button>
+                              </form>";
+                    } elseif ($appt['status'] === 'approved') {
+                        echo "<form method='post' style='display:inline;'>
+                                <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
+                                <button type='submit' name='complete_appointment' value='complete' class='btn btn-info btn-sm'>Complete</button>
                               </form>";
                     } else {
                         echo "N/A";

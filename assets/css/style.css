@@ -2,6 +2,8 @@ html, body, main {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
 }
 
 :root {
@@ -12,6 +14,111 @@ html, body, main {
     --accent: #1e73be;
     --accent-dark: #155a9a;
 }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 80px;
+        background-color: #f8f9fa;
+        transition: width 0.3s ease;
+        overflow: hidden;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .sidebar.expanded {
+        width: 250px;
+    }
+
+    .nav-item {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        color: #495057;
+        white-space: nowrap;
+    }
+
+    .nav-item:hover {
+        background-color: #e9ecef;
+    }
+
+    .nav-item.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+        min-width: 40px;
+        stroke: currentColor;
+    }
+
+    .nav-item span {
+        margin-left: 15px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .sidebar.expanded .nav-item span {
+        opacity: 1;
+    }
+
+    .user-profile {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .user-profile img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-profile span {
+        margin-left: 15px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        white-space: nowrap;
+    }
+
+    .sidebar.expanded .user-profile span {
+        opacity: 1;
+    }
+
+    .toggle-btn {
+        position: absolute;
+        top: 15px;
+        right: -15px;
+        width: 30px;
+        height: 30px;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 50%;
+        color: #495057;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .toggle-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: #000000;
+    }
 
     .home-page {
         position: relative; /* allow absolute centering of the card */

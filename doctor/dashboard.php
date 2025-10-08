@@ -94,6 +94,7 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
         <?php endif; ?>
         <p class="text-center">Welcome, doctor <?= $first_name ?>!</p>
         <a href="profile.php" class="btn btn-primary">View Profile</a>
+        <a href="medical_records.php" class="btn btn-success">Medical Records</a>
     </div>
     <table class="container col-6 table table-striped table-bordered">
         <thead>

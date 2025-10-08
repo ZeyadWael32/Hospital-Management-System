@@ -287,4 +287,39 @@ function update_appointment_status($conn, $id, $status) {
         return false; // Preparation failed
     }
 }
+
+function get_all_medical_records($conn) {
+    $sql = "
+    SELECT
+        mr.id,
+        mr.diagnosis,
+        mr.treatment,
+        mr.record_date,
+        p.name AS patient_name,
+        d.name AS doctor_name,
+        a.appointment_datetime
+    FROM medical_records mr
+    INNER JOIN patients p ON mr.patient_id = p.id
+    INNER JOIN doctors d ON mr.doctor_id = d.id
+    INNER JOIN appointments a ON mr.appointment_id = a.id
+    ORDER BY mr.record_date ASC;
+    ";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $records = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $records[] = $row;
+            }
+            mysqli_stmt_close($stmt);
+            return $records;
+        } else {
+            mysqli_stmt_close($stmt);
+            return []; // Execution failed
+        }
+    } else {
+        return []; // Preparation failed
+    }
+}
 ?>

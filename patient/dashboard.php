@@ -17,8 +17,11 @@ $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
             Patient Dashboard
         </div>
         <p class="text-center">Welcome, patient <?= $first_name ?>!</p>
-        <a href="profile.php" class="btn btn-primary">View Profile</a>
-        <a href="book_appointment.php" class="btn btn-success">Book Appointment</a>
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+            <a href="profile.php" class="btn btn-primary">View Profile</a>
+            <a href="book_appointment.php" class="btn btn-success">Book Appointment</a>
+            <a href="medical_records.php" class="btn btn-warning text-dark">View Medical Records</a>
+        </div>
     </div>
 </main>
 

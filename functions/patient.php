@@ -153,4 +153,33 @@ function cancel_appointment($conn, $appointment_id, $patient_id) {
         return false; // Preparation failed
     }
 }
+
+function get_patient_medical_records($conn, $patient_id) {
+    $sql = "
+        SELECT mr.id, mr.diagnosis, mr.treatment, mr.record_date,
+               u.name AS doctor_name,
+               a.appointment_datetime
+        FROM medical_records mr
+        INNER JOIN appointments a ON mr.appointment_id = a.id
+        INNER JOIN doctors d ON a.doctor_id = d.id
+        INNER JOIN users u ON d.user_id = u.id
+        WHERE mr.patient_id = ?
+        ORDER BY mr.record_date ASC
+    ";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $patient_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $records = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $records[] = $row;
+        }
+        mysqli_stmt_close($stmt);
+        return $records;
+    }
+    return [];
+}
+
 ?>

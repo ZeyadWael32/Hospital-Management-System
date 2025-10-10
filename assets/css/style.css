@@ -13,6 +13,9 @@ html, body, main {
     --input-bg: rgba(255,255,255,0.12);
     --accent: #1e73be;
     --accent-dark: #155a9a;
+    --sidebar-bg: rgba(8,34,68,0.88);
+    --sidebar-text: rgba(255,255,255,0.95);
+    --sidebar-muted: rgba(255,255,255,0.78);
 }
 
     .sidebar {
@@ -21,11 +24,14 @@ html, body, main {
         left: 0;
         height: 100vh;
         width: 80px;
-        background-color: #f8f9fa;
-        transition: width 0.3s ease;
+        background-color: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        transition: width 0.28s ease, transform 220ms ease;
         overflow: hidden;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        z-index: 1000;
+        box-shadow: 2px 6px 18px rgba(0,0,0,0.24);
+        z-index: 1100;
+        backdrop-filter: blur(6px);
+        border-right: 1px solid rgba(255,255,255,0.03);
     }
 
     .sidebar.expanded {
@@ -36,61 +42,69 @@ html, body, main {
         height: 60px;
         display: flex;
         align-items: center;
-        padding: 0 20px;
+        padding: 0 18px;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: background-color 0.18s, color 0.18s;
         text-decoration: none;
-        color: #495057;
+        color: var(--sidebar-muted);
         white-space: nowrap;
+        border-left: 3px solid transparent;
     }
 
     .nav-item:hover {
-        background-color: #e9ecef;
+        background-color: rgba(255,255,255,0.03);
+        color: var(--sidebar-text);
     }
 
     .nav-item.active {
-        background-color: #0d6efd;
-        color: white;
+        background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        color: var(--sidebar-text);
+        border-left-color: var(--accent);
     }
 
     .nav-item svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         min-width: 40px;
         stroke: currentColor;
     }
 
     .nav-item span {
-        margin-left: 15px;
+        margin-left: 14px;
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.28s ease, transform 0.28s ease;
+        transform: translateX(-6px);
     }
 
     .sidebar.expanded .nav-item span {
         opacity: 1;
+        transform: translateX(0);
     }
 
     .user-profile {
         position: absolute;
-        bottom: 20px;
-        left: 20px;
+        bottom: 22px;
+        left: 16px;
         display: flex;
         align-items: center;
         cursor: pointer;
     }
 
     .user-profile img {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         object-fit: cover;
+        border: 2px solid rgba(255,255,255,0.06);
     }
 
     .user-profile span {
-        margin-left: 15px;
+        margin-left: 12px;
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.28s ease;
         white-space: nowrap;
+        color: var(--sidebar-text);
+        font-weight: 600;
     }
 
     .sidebar.expanded .user-profile span {
@@ -99,25 +113,44 @@ html, body, main {
 
     .toggle-btn {
         position: absolute;
-        top: 15px;
-        right: -15px;
-        width: 30px;
-        height: 30px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
+        top: 14px;
+        right: -16px;
+        width: 34px;
+        height: 34px;
+        background-color: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
         border-radius: 50%;
-        color: #495057;
+        color: var(--sidebar-text);
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0 6px 16px rgba(3,10,27,0.36);
     }
 
     .toggle-btn svg {
         width: 14px;
         height: 14px;
-        stroke: #000000;
+        stroke: var(--sidebar-text);
+    }
+
+    /* mobile overlay behavior: hide by default and slide in when .open is added */
+    @media (max-width: 767.98px) {
+        .sidebar {
+            width: 0;
+            transform: translateX(-100%);
+            height: 100vh;
+            left: 0;
+            top: 0;
+            border-right: none;
+        }
+        .sidebar.open {
+            transform: translateX(0);
+            width: 250px;
+            box-shadow: 10px 24px 48px rgba(0,0,0,0.48);
+        }
+        /* ensure main content isn't shifted on small screens */
+        main, .home-page { padding-left: 0 !important; }
     }
 
     .home-page {
@@ -384,5 +417,284 @@ html, body, main {
     .auth-page .container.card .card-footer a:focus {
         color: #fff !important;
         text-decoration: none;
+    }
+
+    /* ============ Site-wide Theme Overrides ============ */
+    /* General page container/card styles to match auth cards */
+    /* Cards use translucent card-bg by default but inherit text color from context.
+       Avoid forcing white text globally so cards remain readable on light pages. */
+    .card, .container.card {
+        background: var(--card-bg) !important;
+        color: inherit;
+        border: 1px solid var(--card-border) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.22) !important;
+        backdrop-filter: blur(6px) !important;
+        border-radius: 12px;
+    }
+
+    /* Navbars: darker translucent bar with subtle border */
+    .navbar, header.navbar {
+        background: rgba(6,32,62,0.82) !important;
+        color: var(--muted-white) !important;
+        border-bottom: 1px solid rgba(255,255,255,0.03) !important;
+        backdrop-filter: blur(4px) !important;
+    }
+    .navbar .nav-link, .navbar a {
+        color: var(--muted-white) !important;
+    }
+    .navbar .nav-link:hover, .navbar a:hover {
+        color: #fff !important;
+        opacity: 0.95;
+    }
+
+    /* Tables: clean, subtle separators and readable text */
+    table.table {
+        background: transparent;
+        color: #fff;
+        border-collapse: collapse;
+    }
+    table.table thead th {
+        color: var(--muted-white);
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+    }
+    table.table tbody td {
+        border-bottom: 1px dashed rgba(255,255,255,0.04);
+        vertical-align: middle;
+    }
+
+    /* Forms: inputs that match the card look across the site */
+    input.form-control, select.form-select, textarea.form-control {
+        background: var(--input-bg) !important;
+        color: #fff !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 8px !important;
+        padding: 0.5rem 0.7rem !important;
+    }
+    input.form-control::placeholder, textarea.form-control::placeholder {
+        color: var(--muted-white) !important;
+        opacity: 0.9;
+    }
+
+    label.form-label, .form-text {
+        color: var(--muted-white) !important;
+    }
+
+    /* Buttons: primary and outline variants tuned for contrast */
+    .btn-primary {
+        background-color: var(--accent) !important;
+        border-color: var(--accent-dark) !important;
+        color: #fff !important;
+        box-shadow: 0 6px 18px rgba(30,115,190,0.12);
+    }
+    .btn-primary:hover, .btn-primary:focus {
+        background-color: var(--accent-dark) !important;
+        transform: translateY(-1px);
+    }
+    .btn-outline-secondary {
+        color: var(--muted-white) !important;
+        border-color: rgba(255,255,255,0.08) !important;
+        background: transparent !important;
+    }
+    .btn-outline-secondary:hover {
+        background: rgba(255,255,255,0.03) !important;
+    }
+
+    /* Alerts inside cards: maintain translucency and readable text */
+    .alert {
+        background: rgba(255,255,255,0.08) !important;
+        color: #fff !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        border-radius: 8px !important;
+    }
+    .alert-danger { background: rgba(200,60,60,0.12) !important; }
+    .alert-success { background: rgba(80,180,120,0.12) !important; }
+
+    /* Modals: dark translucent backdrop and cozy dialog */
+    .modal-content {
+        background: linear-gradient(180deg, rgba(8,34,68,0.95), rgba(6,28,56,0.92)) !important;
+        color: var(--muted-white) !important;
+        border: 1px solid rgba(255,255,255,0.04) !important;
+        box-shadow: 0 18px 40px rgba(0,0,0,0.48) !important;
+        border-radius: 12px !important;
+    }
+    .modal-backdrop.show {
+        background: rgba(3,10,27,0.6) !important;
+        backdrop-filter: blur(3px) !important;
+    }
+
+    /* Small utility: ensure main content has left padding to avoid sidebar overlap on desktop */
+    @media (min-width: 768px) {
+        main, .container-fluid.main-content {
+            padding-left: 90px; /* sidebar compact width + small gap */
+            transition: padding-left 0.3s ease;
+        }
+        .sidebar.expanded ~ main, .sidebar.expanded ~ .container-fluid.main-content {
+            padding-left: 260px; /* expanded sidebar + gap */
+        }
+    }
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .change {
+            font-size: 14px;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-card .change svg {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .stat-card .change.negative {
+            color: #dc3545;
+        }
+        .stat-card .change.negative svg {
+            transform: rotate(180deg);
+        }
+    /* Stat card icons: normalize to 14x14 and align with text */
+    .stat-card svg, .stat-card .change svg {
+        width: 14px !important;
+        height: 14px !important;
+        vertical-align: middle;
+        margin-right: 6px;
+        display: inline-block;
+    }
+
+    /* ============ Dashboard UI ============ */
+    .doctor-dashboard {
+        padding: 2rem 1.25rem 3rem 1.25rem;
+        min-height: calc(100vh - 80px);
+        /* page-level text should be dark on light backgrounds; stat-cards override to white */
+        color: rgba(6,30,54,0.95);
+    }
+
+    .doctor-dashboard .dashboard-header {
+        max-width: 1200px;
+        margin: 0 auto 1.25rem auto;
+        padding: 0.5rem 0.75rem;
+    }
+    .doctor-dashboard .dashboard-header h1 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--accent-dark);
+        letter-spacing: -0.2px;
+    }
+    .doctor-dashboard .dashboard-header p {
+        margin: 0;
+        color: rgba(9,34,62,0.62);
+        opacity: 0.95;
+    }
+
+    .doctor-dashboard .stats-cards {
+        max-width: 1200px;
+        margin: 1rem auto 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .doctor-dashboard .stat-card {
+        padding: 1rem 1rem;
+        border-radius: 12px;
+        /* stronger dark translucent background for legibility */
+        background: linear-gradient(180deg, rgba(6,30,54,0.92), rgba(8,34,68,0.9)) !important;
+        border: 1px solid rgba(255,255,255,0.06) !important;
+        box-shadow: 0 14px 36px rgba(3,9,30,0.46) !important;
+        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #fff; /* keep stat card content readable */
+        backdrop-filter: blur(6px);
+    }
+
+    .doctor-dashboard .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 28px 56px rgba(3,9,30,0.52);
+    }
+
+    .doctor-dashboard .stat-card h3 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.95);
+        opacity: 0.95;
+        text-transform: none;
+    }
+
+    .doctor-dashboard .stat-card .value {
+        font-size: 1.95rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.5px;
+    }
+
+    .doctor-dashboard .stat-card .change {
+        font-size: 0.85rem;
+        color: rgba(88, 185, 120, 0.98); /* green */
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        opacity: 0.95;
+    }
+
+    .doctor-dashboard .stat-card .change.negative {
+        color: rgba(255,100,100,0.98); /* red for negative */
+    }
+
+    /* Ensure inline svgs inherit text color and negative svgs rotate */
+    .doctor-dashboard .stat-card .change svg,
+    .stat-card .change svg {
+        stroke: currentColor;
+        fill: none;
+        transition: transform 160ms ease, stroke 160ms ease;
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+
+    .doctor-dashboard .stat-card .change.negative svg,
+    .stat-card .change.negative svg {
+        transform: rotate(180deg);
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 575.98px) {
+        .doctor-dashboard { padding: 1rem; }
+        .doctor-dashboard .dashboard-header h1 { font-size: 1.25rem; }
+        .doctor-dashboard .stat-card { padding: 0.9rem; }
+        .doctor-dashboard .stat-card .value { font-size: 1.45rem; }
     }
 

@@ -6,138 +6,66 @@ require_once __DIR__ . '/../functions/helpers.php';
 require_login();
 required_role(['doctor','admin']);
 
-$doctor_id = get_doctor_id($conn, $_SESSION['user_id']);
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['approve_appointment'])) {
-        $appointment_id = $_POST['appointment_id'] ?? '';
-
-        if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
-            header('Location: dashboard.php?error=4'); // invalid appointment
-            exit;
-        } elseif (update_appointment_status($conn, $appointment_id, 'approved')) {
-            header('Location: dashboard.php?success=1'); // approved successfully
-            exit;
-        } else {
-            header('Location: dashboard.php?error=1'); // generic approval failure
-            exit;
-        }
-    }
-
-    if (isset($_POST['reject_appointment'])) {
-        $appointment_id = $_POST['appointment_id'] ?? '';
-
-        if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
-            header('Location: dashboard.php?error=4'); // invalid appointment
-            exit;
-        } elseif (update_appointment_status($conn, $appointment_id, 'cancelled')) {
-            header('Location: dashboard.php?success=2'); // rejected successfully
-            exit;
-        } else {
-            header('Location: dashboard.php?error=2'); // reject failed / not found
-            exit;
-        }
-    }
-}
-    if (isset($_POST['complete_appointment'])) {
-        $appointment_id = $_POST['appointment_id'] ?? '';
-
-        if (!$appointment_id || !is_numeric($appointment_id) || intval($appointment_id) <= 0) {
-            header('Location: dashboard.php?error=4'); // invalid appointment
-            exit;
-        } elseif (update_appointment_status($conn, $appointment_id, 'completed')) {
-            header('Location: dashboard.php?success=3'); // completed successfully
-            exit;
-        } else {
-            header('Location: dashboard.php?error=3'); // complete failed / not found
-            exit;
-        }
-    }
-
-
-$message = '';
-$alertClass = 'alert-success';
-
-if (isset($_GET['success'])) {
-    switch ($_GET['success']) {
-        case '1': $message = '✅ Appointment approved successfully.'; break;
-        case '2': $message = '✅ Appointment rejected successfully.'; break;
-        case '3': $message = '✅ Appointment marked as completed successfully.'; break;
-        default: $message = '';
-    }
-} elseif (isset($_GET['error'])) {
-    $alertClass = 'alert-danger';
-    switch ($_GET['error']) {
-        case '1': $message = '❌ Failed to approve appointment. Please try again.'; break;
-        case '2': $message = '❌ Failed to reject appointment. Please try again.'; break;
-        case '3': $message = '❌ Invalid date/time for appointment.'; break;
-        case '4': $message = '❌ Invalid appointment selected.'; break;
-        case '5': $message = '❌ Doctor profile not found. Contact admin.'; break;
-        default: $message = '❌ An unknown error occurred. Please try again.';
-    }
-}
-
-$title = "Doctor Dashboard";
-include __DIR__ . '/../includes/header.php';
-
 $first_name = get_first_name(ucfirst(htmlspecialchars($_SESSION['name'])));
+$doctor_id = get_doctor_id($conn, $_SESSION['user_id']);
+$stats = get_dashboard_stats($conn, $doctor_id);
+
+$title = "Dashboard";
+include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/sidebar.php';
+
 ?>
 
 <main class="doctor-dashboard">
-    <div class="container card shadow p-3 mb-5 bg-body rounded">
-        <div class="text-center h2">
-            Doctor Dashboard
-        </div>
-        <?php if ($message): ?>
-            <div class="alert <?= $alertClass ?? 'alert-info' ?> text-center">
-                <?= htmlspecialchars($message) ?>
-            </div>
-        <?php endif; ?>
-        <p class="text-center">Welcome, doctor <?= $first_name ?>!</p>
-        <a href="profile.php" class="btn btn-primary">View Profile</a>
-        <a href="medical_records.php" class="btn btn-success">Medical Records</a>
+    <div class="dashboard-header">
+        <h1>Hospital Dashboard</h1>
+        <p>Welcome back, Dr. <?= $first_name ?>! Here's your hospital overview for today.</p>
     </div>
-    <table class="container col-6 table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Patient Name</th>
-                <th>Appointment Date & Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $appointments = get_doctor_appointments($conn, $doctor_id);
-            if ($appointments) {
-                foreach ($appointments as $appt) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($appt['patient_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars(date('Y-m-d H:i', strtotime($appt['appointment_datetime']))) . "</td>";
-                    echo "<td>" . get_status_badge($appt['status'], $appt['appointment_datetime']) . "</td>";
-                    echo "<td>";
-                    if ($appt['status'] === 'pending') {
-                        echo "<form method='post' style='display:inline;'>
-                                <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
-                                <button type='submit' name='approve_appointment' value='approve' class='btn btn-success btn-sm me-1'>Approve</button>
-                                <button type='submit' name='reject_appointment' value='reject' class='btn btn-danger btn-sm'>Reject</button>
-                              </form>";
-                    } elseif ($appt['status'] === 'approved') {
-                        echo "<form method='post' style='display:inline;'>
-                                <input type='hidden' name='appointment_id' value='" . htmlspecialchars($appt['id']) . "'>
-                                <button type='submit' name='complete_appointment' value='complete' class='btn btn-info btn-sm'>Complete</button>
-                              </form>";
-                    } else {
-                        echo "N/A";
-                    }
-                    echo "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='4' class='text-center'>No appointments found.</td></tr>";
-            }
-            ?>
-        </tbody>
-    </table>
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>Total Patients</h3>
+                <div class="value"><?= htmlspecialchars($stats['total_patients'] ?? 0) ?></div>
+                <div class="change">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                    8% from last month
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Total Appointments</h3>
+                <div class="value"><?= htmlspecialchars($stats['total_appointments'] ?? 0) ?></div>
+                <div class="change">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                    5 pending confirmations
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Upcoming Appointments</h3>
+                <div class="value"><?= htmlspecialchars($stats['upcoming_appointments'] ?? 0) ?></div>
+                <div class="change negative">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                    81% occupancy rate
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>Active Doctors</h3>
+                <div class="value"><?= htmlspecialchars($stats['active_doctors'] ?? 0) ?></div>
+                <div class="change">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                    </svg>
+                    On duty today
+                </div>
+            </div>
+        </div>
 </main>
 
 <?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -129,7 +129,6 @@ function update_appointment_status($conn, $appointment_id, $status) {
 }
 
 function add_medical_record($conn, $patient_id, $doctor_id, $appointment_id, $diagnosis, $treatment, $record_date) {
-    // Use explicit placeholder for record_date so callers can pass a timestamp; otherwise pass NOW() from PHP
     $sql = "INSERT INTO medical_records (patient_id, doctor_id, appointment_id, diagnosis, treatment, record_date) VALUES (?, ?, ?, ?, ?, ?)";
 
     if ($stmt = mysqli_prepare($conn, $sql)) {
@@ -174,9 +173,6 @@ function show_distinct_appointments($conn, $doctor_id) {
     }
 }
 
-/**
- * Return upcoming appointments for a doctor with appointment id, patient id and patient name
- */
 function get_appointments_for_doctor($conn, $doctor_id) {
     $sql = "
     SELECT a.id AS appointment_id, p.id AS patient_id, u.name AS patient_name, a.appointment_datetime, a.status
@@ -205,9 +201,6 @@ function get_appointments_for_doctor($conn, $doctor_id) {
     return [];
 }
 
-/**
- * Return appointment row by id (or null)
- */
 function get_appointment_by_id($conn, $appointment_id) {
     $sql = "SELECT id, patient_id, doctor_id, appointment_datetime, status FROM appointments WHERE id = ? LIMIT 1";
     if ($stmt = mysqli_prepare($conn, $sql)) {
@@ -222,11 +215,6 @@ function get_appointment_by_id($conn, $appointment_id) {
     }
     return null;
 }
-
-/**
- * Get medical records for a doctor where the related appointment is marked completed.
- * Returns rows with patient_name, diagnosis, treatment, record_date, appointment_id
- */
 function get_completed_medical_records_for_doctor($conn, $doctor_id) {
     $sql = "
     SELECT mr.id AS record_id, u.name AS patient_name, mr.diagnosis, mr.treatment, mr.record_date, a.id AS appointment_id
@@ -252,5 +240,73 @@ function get_completed_medical_records_for_doctor($conn, $doctor_id) {
         mysqli_stmt_close($stmt);
     }
     return [];
+}
+
+function get_dashboard_stats($conn, $doctor_id) {
+
+    $stats = [
+        'total_appointments' => 0,
+        'upcoming_appointments' => 0,
+        'total_patients' => 0,
+        'active_doctors' => 0
+    ];
+
+    $total_appointments = 0;
+    $upcoming_appointments = 0;
+    $total_patients = 0;
+    $active_doctors = 0;
+
+    if ($stmt = mysqli_prepare($conn, "SELECT COUNT(*) FROM appointments WHERE doctor_id = ?")) {
+        mysqli_stmt_bind_param($stmt, "i", $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_bind_result($stmt, $total_appointments);
+            if (mysqli_stmt_fetch($stmt)) {
+                $stats['total_appointments'] = (int)$total_appointments;
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    if ($stmt = mysqli_prepare($conn, "SELECT COUNT(*) FROM appointments WHERE doctor_id = ? AND appointment_datetime > NOW() AND status = 'approved'")) {
+        mysqli_stmt_bind_param($stmt, "i", $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_bind_result($stmt, $upcoming_appointments);
+            if (mysqli_stmt_fetch($stmt)) {
+                $stats['upcoming_appointments'] = (int)$upcoming_appointments;
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    if ($stmt = mysqli_prepare($conn, "SELECT COUNT(DISTINCT patient_id) FROM appointments WHERE doctor_id = ?")) {
+        mysqli_stmt_bind_param($stmt, "i", $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_bind_result($stmt, $total_patients);
+            if (mysqli_stmt_fetch($stmt)) {
+                $stats['total_patients'] = (int)$total_patients;
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    if ($stmt = mysqli_prepare($conn, "SELECT COUNT(*) FROM doctors WHERE id IS NOT NULL")) {
+        if (mysqli_stmt_execute($stmt)) {
+            mysqli_stmt_bind_result($stmt, $active_doctors);
+            if (mysqli_stmt_fetch($stmt)) {
+                $stats['active_doctors'] = (int)$active_doctors;
+            }
+            mysqli_stmt_close($stmt);
+        } else {
+            mysqli_stmt_close($stmt);
+        }
+    }
+
+    return $stats;
 }
 ?>

@@ -70,6 +70,7 @@ if ($doctor_id) {
 
 $title = 'Medical Records';
 include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/sidebar.php';
 ?>
 
 <main class="doctor-medical-records">

@@ -96,6 +96,7 @@ $info = get_doctor_info($conn, $_SESSION['user_id'] ?? $user_id);
 
 $title = 'Doctor Profile';
 include __DIR__ . '/../includes/header.php';
+include __DIR__ . '/../includes/sidebar.php';
 ?>
 
 <main class="container mt-5">

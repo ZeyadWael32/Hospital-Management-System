@@ -1,11 +1,3 @@
-html, body, main {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e9ecef;
-}
-
 :root {
     --card-bg: rgba(10,55,120,0.55);
     --card-border: rgba(255,255,255,0.12);
@@ -16,685 +8,902 @@ html, body, main {
     --sidebar-bg: rgba(8,34,68,0.88);
     --sidebar-text: rgba(255,255,255,0.95);
     --sidebar-muted: rgba(255,255,255,0.78);
+    --sidebar-compact: 80px;
+    --sidebar-expanded: 250px;
 }
 
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        width: 80px;
-        background-color: var(--sidebar-bg);
-        color: var(--sidebar-text);
-        transition: width 0.28s ease, transform 220ms ease;
-        overflow: hidden;
-        box-shadow: 2px 6px 18px rgba(0,0,0,0.24);
-        z-index: 1100;
-        backdrop-filter: blur(6px);
-        border-right: 1px solid rgba(255,255,255,0.03);
-    }
+html, body, main {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e9ecef;
+}
 
-    .sidebar.expanded {
-        width: 250px;
-    }
+/* Ensure a fixed top-navbar doesn't overlap page content */
+body {
+    padding-top: 45px; /* ample space for navbar + buffer */
+}
 
-    .nav-item {
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 18px;
-        cursor: pointer;
-        transition: background-color 0.18s, color 0.18s;
-        text-decoration: none;
-        color: var(--sidebar-muted);
-        white-space: nowrap;
-        border-left: 3px solid transparent;
-    }
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-expanded);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    overflow: hidden;
+    box-shadow: 2px 6px 18px rgba(0,0,0,0.24);
+    z-index: 1100;
+    backdrop-filter: blur(6px);
+    border-right: 1px solid rgba(255,255,255,0.03);
+}
 
-    .nav-item:hover {
-        background-color: rgba(255,255,255,0.03);
-        color: var(--sidebar-text);
-    }
+.nav-item {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s;
+    text-decoration: none;
+    color: var(--sidebar-muted);
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+.nav-item:hover {
+    background: rgba(255,255,255,0.03);
+    color: var(--sidebar-text);
+}
+.nav-item.active {
+    background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    color: var(--sidebar-text);
+    border-left-color: var(--accent);
+}
+.nav-item svg {
+    width: 22px;
+    height: 22px;
+    min-width: 40px;
+    stroke: currentColor;
+}
+.nav-item span {
+    margin-left: 14px;
+    opacity: 1; /* always visible */
+    transition: opacity 0.18s, transform 0.18s;
+    transform: translateX(0);
+}
 
-    .nav-item.active {
-        background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
-        color: var(--sidebar-text);
-        border-left-color: var(--accent);
-    }
+.user-profile {
+    position: absolute;
+    bottom: 22px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.user-profile img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.06);
+}
+.user-profile span {
+    margin-left: 12px;
+    opacity: 1; /* always visible */
+    transition: opacity 0.18s;
+    white-space: nowrap;
+    color: var(--sidebar-text);
+    font-weight: 600;
+}
 
-    .nav-item svg {
-        width: 22px;
-        height: 22px;
-        min-width: 40px;
-        stroke: currentColor;
-    }
+.toggle-btn { display: none !important; }
 
-    .nav-item span {
-        margin-left: 14px;
-        opacity: 0;
-        transition: opacity 0.28s ease, transform 0.28s ease;
-        transform: translateX(-6px);
-    }
+/* Top navbar to sit beside the fixed sidebar */
+.top-navbar {
+    position: fixed;
+    /* flush against the sidebar with no extra gap */
+    left: var(--sidebar-expanded);
+    right: 0;
+    top: 0;
+    height: 64px;
+    /* stronger dark background to contrast with page content */
+    background: rgba(8,34,68,0.96);
+    color: var(--muted-white);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    /* remove bottom border so no thin line appears */
+    border-bottom: none !important;
+    box-shadow: 0 6px 18px rgba(2,10,24,0.32);
+    z-index: 1105;
+}
 
-    .sidebar.expanded .nav-item span {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.top-navbar .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
 
-    .user-profile {
-        position: absolute;
-        bottom: 22px;
-        left: 16px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-    }
+.top-navbar .brand-title {
+    font-weight: 700;
+    color: var(--muted-white);
+    font-size: 20px;
+}
 
-    .user-profile img {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid rgba(255,255,255,0.06);
-    }
+.top-navbar .nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-left: 12px;
+    border-bottom: none !important;
+}
 
-    .user-profile span {
-        margin-left: 12px;
-        opacity: 0;
-        transition: opacity 0.28s ease;
-        white-space: nowrap;
-        color: var(--sidebar-text);
-        font-weight: 600;
-    }
+.top-navbar .nav-tabs a {
+    color: rgba(230,238,249,0.78);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    text-decoration: none !important;
+    transition: background .15s ease, color .15s ease;
+}
 
-    .sidebar.expanded .user-profile span {
-        opacity: 1;
-    }
+.top-navbar .nav-tabs a.active {
+    background: linear-gradient(90deg, rgba(59,130,246,0.18), rgba(99,102,241,0.12));
+    color: #fff;
+}
 
-    .toggle-btn {
-        position: absolute;
-        top: 14px;
-        right: -16px;
-        width: 34px;
-        height: 34px;
-        background-color: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 50%;
-        color: var(--sidebar-text);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 6px 16px rgba(3,10,27,0.36);
-    }
+.top-navbar .nav-tabs a:hover,
+.top-navbar .nav-tabs a:focus {
+    text-decoration: none !important;
+}
 
-    .toggle-btn svg {
-        width: 14px;
-        height: 14px;
-        stroke: var(--sidebar-text);
-    }
+.top-navbar .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
 
-    /* mobile overlay behavior: hide by default and slide in when .open is added */
-    @media (max-width: 767.98px) {
-        .sidebar {
-            width: 0;
-            transform: translateX(-100%);
-            height: 100vh;
-            left: 0;
-            top: 0;
-            border-right: none;
-        }
-        .sidebar.open {
-            transform: translateX(0);
-            width: 250px;
-            box-shadow: 10px 24px 48px rgba(0,0,0,0.48);
-        }
-        /* ensure main content isn't shifted on small screens */
-        main, .home-page { padding-left: 0 !important; }
-    }
+.top-navbar .icon-btn {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: rgba(230,238,249,0.95);
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+}
 
-    .home-page {
-        position: relative; /* allow absolute centering of the card */
-        min-height: 100vh; /* ensure it fills viewport */
-        background: url("../img/home-bg.jpg") no-repeat center center fixed;
-        background-size: cover;
-    }
+.top-navbar .icon-btn:hover {
+    background: rgba(255,255,255,0.04);
+    transform: translateY(-2px);
+}
 
-    .home-page .container.card {
-        /* center the card without affecting other children (like navbar) */
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        padding: 2rem;
-        max-width: 980px;
-        width: 94%;
-    }
+.top-navbar .user-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.02);
+}
 
-    /* ============ Authentication Pages Styles ============ */
-    /* Use .auth-page for shared auth UI (login/register). Keep .login-page as a light background helper. */
-    .auth-page {
-        display: flex;
-        align-items: center; /* vertical center */
-        justify-content: center; /* horizontal center */
-        min-height: 100vh; /* ensure it fills viewport for perfect centering */
-        padding: 2rem 0;
-        background: url("../img/background.png") no-repeat center center fixed;
-        background-size: cover;
-    }
+.top-navbar .user-block .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.95), rgba(99,102,241,0.95));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+}
 
-    /* Make the card container narrower on desktop and remove extra top/bottom spacing for alerts */
-    .auth-page .container.card {
-        max-width: 560px; 
-        width: 94%;
-        padding: 1.75rem;
-        /* translucent blue card look */
-        background: var(--card-bg) !important;
-        color: #fff !important; /* make text readable on dark translucent bg */
-        border: 1px solid var(--card-border) !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.28) !important;
-        backdrop-filter: blur(8px) !important;
-        border-radius: 14px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-    }
+.top-navbar .user-details { color: rgba(230,238,249,0.95); text-align: left; }
+.top-navbar .user-details .user-name { font-weight: 700; font-size: 0.95rem; }
+.top-navbar .user-details .user-role { font-size: 0.75rem; opacity: 0.85; }
 
-    /* make inputs readable on the translucent card */
-    .auth-page .container.card input.form-control {
-        background: var(--input-bg) !important; /* light translucent background */
-        color: #fff !important; /* white text for contrast on blue card */
-        border: 1px solid var(--card-border) !important;
-        backdrop-filter: none !important;
-    }
+/* Sidebar is permanently visible; no overlay behavior on mobile */
+@media (max-width: 767.98px) {
+    .sidebar { width: var(--sidebar-expanded); }
+    main, .home-page { padding-left: calc(var(--sidebar-expanded) + 10px); }
+}
 
-    /* Make select controls match input styles */
-    .auth-page .container.card select.form-select {
-        background: var(--input-bg) !important;
-        color: #fff !important;
-        border: 1px solid var(--card-border) !important;
-        border-radius: 6px;
-    }
+.home-page {
+    position: relative;
+    min-height: 100vh;
+    background: url("../img/home-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+}
+.home-page .container.card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem;
+    max-width: 980px;
+    width: 94%;
+}
 
-    /* Make textarea match inputs */
-    .auth-page .container.card textarea.form-control {
-        background: var(--input-bg) !important;
-        color: #fff !important;
-        border: 1px solid var(--card-border) !important;
-        border-radius: 6px;
-    }
+/* Authentication Pages */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+    background: url("../img/background.png") no-repeat center center fixed;
+    background-size: cover;
+}
+.auth-page .container.card {
+    max-width: 560px;
+    width: 94%;
+    padding: 1.75rem;
+    background: var(--card-bg) !important;
+    color: #fff !important;
+    border: 1px solid var(--card-border) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.28) !important;
+    backdrop-filter: blur(8px) !important;
+    border-radius: 14px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+}
+.auth-page .container.card input.form-control,
+.auth-page .container.card textarea.form-control,
+.auth-page .container.card select.form-select {
+    background: var(--input-bg) !important;
+    color: #fff !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 6px;
+}
+.auth-page .container.card input.form-control,
+.auth-page .container.card textarea.form-control {
+    padding: 0.5rem 0.75rem;
+}
+.auth-page .container.card input.form-control::placeholder,
+.auth-page .container.card textarea.form-control::placeholder {
+    color: var(--muted-white) !important;
+    opacity: 0.9 !important;
+}
+.auth-page .container.card select.form-select {
+    -webkit-text-fill-color: var(--muted-white) !important;
+    opacity: 1 !important;
+}
+.auth-page .container.card select.form-select option {
+    color: #000;
+}
+.auth-page .container.card select.form-select:focus,
+.auth-page .container.card input.form-control:focus {
+    box-shadow: 0 6px 18px rgba(30,115,190,0.12) !important;
+    border-color: rgba(255,255,255,0.18) !important;
+}
+.auth-page .container.card input.form-control:focus {
+    background: rgba(255,255,255,0.22) !important;
+}
+.auth-page .container.card .btn-primary {
+    background: var(--accent) !important;
+    border-color: var(--accent-dark) !important;
+    transition: background-color 160ms, transform 120ms, box-shadow 160ms;
+    pointer-events: auto !important;
+    z-index: 3;
+}
+.auth-page .container.card .btn-primary:hover,
+.auth-page .container.card .btn-primary:focus {
+    background: #155a9a !important;
+    border-color: #0f4773 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18) !important;
+}
+.auth-page .container.card .btn-primary:active { transform: translateY(0) scale(0.995); }
+.auth-page .container.card .btn,
+.auth-page .container.card .btn-secondary {
+    transition: background-color 160ms, transform 120ms, box-shadow 160ms;
+    pointer-events: auto !important;
+    z-index: 3;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 6px;
+    padding: 0.45rem 0.9rem;
+}
+.auth-page .container.card .btn:hover,
+.auth-page .container.card .btn:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.16) !important;
+}
+.auth-page .container.card .btn:active { transform: translateY(0) scale(0.995); }
+.auth-page .container.card .btn-secondary {
+    background: rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+.auth-page .container.card .btn-secondary:hover,
+.auth-page .container.card .btn-secondary:focus {
+    background: rgba(255,255,255,0.12) !important;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12) !important;
+    transform: translateY(-1px);
+}
+.auth-page .container.card .btn-secondary:active { transform: translateY(0) scale(0.995); }
+.auth-page .container.card .text-center.h2 {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.06);
+    color: #fff !important;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+    font-size: 1.35rem;
+}
+.auth-page .container.card .form-label,
+.auth-page .container.card .form-text {
+    color: var(--muted-white) !important;
+}
+.auth-page .container.card form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.auth-page .container.card .btn-group-inline {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+.auth-page .container.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    pointer-events: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.auth-page .container.card .alert {
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.auth-page .container.card .alert-danger { background: rgba(200, 60, 60, 0.12); }
+.auth-page .container.card .alert-success { background: rgba(80, 180, 120, 0.12); }
+.auth-page .alert {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+.auth-page .container.card .card-footer a {
+    color: #fff !important;
+    text-decoration: underline;
+    font-weight: 600;
+}
+.auth-page .container.card .card-footer a:hover,
+.auth-page .container.card .card-footer a:focus {
+    color: #fff !important;
+    text-decoration: none;
+}
 
-    /* Ensure textarea placeholder is visible (white) */
-    .auth-page .container.card textarea.form-control::placeholder {
-        color: var(--muted-white) !important;
-        opacity: 0.9 !important;
-    }
+/* Site-wide Theme Overrides */
+.card, .container.card {
+    background: var(--card-bg) !important;
+    color: inherit;
+    border: 1px solid var(--card-border) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.22) !important;
+    backdrop-filter: blur(6px) !important;
+    border-radius: 12px;
+}
+.navbar, header.navbar {
+    background: rgba(6,32,62,0.82) !important;
+    color: var(--muted-white) !important;
+    border-bottom: 1px solid rgba(255,255,255,0.03) !important;
+    backdrop-filter: blur(4px) !important;
+}
+.navbar .nav-link, .navbar a { color: var(--muted-white) !important; }
+.navbar .nav-link:hover, .navbar a:hover {
+    color: #fff !important;
+    opacity: 0.95;
+}
+table.table {
+    background: transparent;
+    color: #fff;
+    border-collapse: collapse;
+}
+table.table thead th {
+    color: var(--muted-white);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+}
+table.table tbody td {
+    border-bottom: 1px dashed rgba(255,255,255,0.04);
+    vertical-align: middle;
+}
+input.form-control, select.form-select, textarea.form-control {
+    background: var(--input-bg) !important;
+    color: #fff !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0.7rem !important;
+}
+input.form-control::placeholder, textarea.form-control::placeholder {
+    color: var(--muted-white) !important;
+    opacity: 0.9;
+}
+label.form-label, .form-text { color: var(--muted-white) !important; }
+.btn-primary {
+    background: var(--accent) !important;
+    border-color: var(--accent-dark) !important;
+    color: #fff !important;
+    box-shadow: 0 6px 18px rgba(30,115,190,0.12);
+    transition: background-color 160ms, transform 120ms;
+}
+.btn-primary:hover, .btn-primary:focus {
+    background: var(--accent-dark) !important;
+    transform: translateY(-1px);
+}
+.btn-outline-secondary {
+    color: var(--muted-white) !important;
+    border-color: rgba(255,255,255,0.08) !important;
+    background: transparent !important;
+}
+.btn-outline-secondary:hover { background: rgba(255,255,255,0.03) !important; }
+.alert {
+    background: rgba(255,255,255,0.08) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 8px !important;
+}
+.alert-danger { background: rgba(200,60,60,0.12) !important; }
+.alert-success { background: rgba(80,180,120,0.12) !important; }
+.modal-content {
+    background: linear-gradient(180deg, rgba(8,34,68,0.95), rgba(6,28,56,0.92)) !important;
+    color: var(--muted-white) !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.48) !important;
+    border-radius: 12px !important;
+}
+.modal-backdrop.show {
+    background: rgba(3,10,27,0.6) !important;
+    backdrop-filter: blur(3px) !important;
+}
 
-    /* Ensure select shows its selected value and matches input focus behavior */
-    .auth-page .container.card select.form-select {
-        color: var(--muted-white) !important;
-        -webkit-text-fill-color: var(--muted-white) !important; /* Safari/Chrome */
-        opacity: 1 !important;
-    }
-    .auth-page .container.card select.form-select option {
-        color: #000; /* dropdown option text (native control) */
-    }
-    .auth-page .container.card select.form-select:focus {
-        box-shadow: 0 6px 18px rgba(30,115,190,0.12) !important;
-        border-color: rgba(255,255,255,0.18) !important;
-    }
+main, .container-fluid.main-content, .doctor-dashboard {
+    margin-left: calc(var(--sidebar-expanded)) !important;
+    transition: margin-left 0.28s ease;
+    padding-top: 104px; /* clear the fixed top navbar (increased to avoid overlap) */
+}
 
-    .auth-page .container.card input.form-control::placeholder {
-        color: var(--muted-white) !important;
-    }
+/* Also move any site header/navbars to align with content */
+.site-navbar, header.navbar {
+    /* Align other header/navbar elements flush with the sidebar */
+    margin-left: calc(var(--sidebar-expanded)) !important;
+}
 
-    .auth-page .container.card input.form-control:focus {
-        background: rgba(255,255,255,0.22) !important;
-        color: #fff !important;
-        box-shadow: 0 6px 18px rgba(30,115,190,0.12) !important;
-        border-color: rgba(255,255,255,0.18) !important;
+/* On very small screens reduce the reserved space slightly to avoid horizontal overflow */
+@media (max-width: 420px) {
+    main, .container-fluid.main-content, .doctor-dashboard, .site-navbar, header.navbar {
+        margin-left: calc(var(--sidebar-expanded) * 0.9) !important;
     }
+    body { padding-top: 96px; }
+}
 
-    .auth-page .container.card .btn-primary {
-        background-color: var(--accent) !important;
-        border-color: var(--accent-dark) !important;
-    }
+/* Stats Cards */
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+.stat-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.stat-card h3 {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.stat-card .value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 10px;
+}
+.stat-card .change {
+    font-size: 14px;
+    color: #28a745;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.stat-card .change svg {
+    width: 14px;
+    height: 14px;
+}
+.stat-card .change.negative {
+    color: #dc3545;
+}
+.stat-card .change.negative svg { transform: rotate(180deg); }
+.stat-card svg, .stat-card .change svg {
+    width: 14px !important;
+    height: 14px !important;
+    vertical-align: middle;
+    margin-right: 6px;
+    display: inline-block;
+}
 
-    /* ensure primary button shows hover/focus states inside the card */
-    .auth-page .container.card .btn-primary {
-        transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
-    }
-    .auth-page .container.card button.btn.btn-primary:hover,
-    .auth-page .container.card .btn.btn-primary:hover,
-    .auth-page .container.card .btn.btn-primary:focus {
-        background-color: #155a9a !important; /* slightly darker */
-        border-color: #0f4773 !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.18) !important;
-    }
-    .auth-page .container.card .btn-primary:active {
-        transform: translateY(0) scale(0.995);
-    }
+/* Dashboard UI */
+.doctor-dashboard {
+    padding: 2rem 1.25rem 3rem 1.25rem;
+    min-height: calc(100vh - 80px);
+    color: rgba(6,30,54,0.95);
+}
+.doctor-dashboard .dashboard-header {
+    max-width: 1200px;
+    margin: 0 0 1.25rem 0; /* left-align header instead of centering */
+    padding: 0.5rem 0.75rem;
+}
+.doctor-dashboard .dashboard-header h1 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent-dark);
+    letter-spacing: -0.2px;
+}
+.doctor-dashboard .dashboard-header p {
+    margin: 0;
+    color: rgba(9,34,62,0.62);
+    opacity: 0.95;
+}
+.doctor-dashboard .stats-cards {
+    max-width: 1200px;
+    margin: 1rem 0 0 0; /* left-align stat cards */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    align-items: stretch;
+}
+.doctor-dashboard .stat-card {
+    padding: 1rem;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(6,30,54,0.92), rgba(8,34,68,0.9)) !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    box-shadow: 0 14px 36px rgba(3,9,30,0.46) !important;
+    transition: transform 160ms, box-shadow 160ms, background 160ms;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #fff;
+    backdrop-filter: blur(6px);
+}
+.doctor-dashboard .stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 56px rgba(3,9,30,0.52);
+}
+.doctor-dashboard .stat-card h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.95);
+    opacity: 0.95;
+    text-transform: none;
+}
+.doctor-dashboard .stat-card .value {
+    font-size: 1.95rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+.doctor-dashboard .stat-card .change {
+    font-size: 0.85rem;
+    color: rgba(88, 185, 120, 0.98);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    opacity: 0.95;
+}
+.doctor-dashboard .stat-card .change.negative {
+    color: rgba(255,100,100,0.98);
+}
+.doctor-dashboard .stat-card .change svg,
+.stat-card .change svg {
+    stroke: currentColor;
+    fill: none;
+    transition: transform 160ms, stroke 160ms;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+/* Card Base Styles */
+.card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-    /* unify title and small UI elements inside the card */
-    .auth-page .container.card .text-center.h2 {
-        display: inline-block;
-        padding: 0.4rem 0.9rem;
-        margin-bottom: 1rem;
-        background: rgba(255,255,255,0.06);
-        color: #fff !important;
-        border-radius: 8px;
-        backdrop-filter: blur(4px);
-    }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f1f5f9;
+}
 
-    /* Slightly larger heading to match card width */
-    .auth-page .container.card .text-center.h2 {
-        font-size: 1.35rem;
-        padding: 0.5rem 1rem;
-    }
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+}
 
-    /* Labels and helper text color */
-    .auth-page .container.card .form-label,
-    .auth-page .container.card .form-text {
-        color: var(--muted-white) !important;
-    }
+.card-action {
+    color: #3b82f6;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-weight: 600;
+}
 
-    /* ensure inline labels/text in the form are visible and aligned */
-    .auth-page .container.card {
-        line-height: 1.4;
-    }
-    .auth-page .container.card input.form-control {
-        border-radius: 6px;
-        padding: 0.5rem 0.75rem;
-    }
-    .auth-page .container.card button.btn {
-        border-radius: 6px;
-        padding: 0.45rem 0.9rem;
-    }
+.card-action:hover {
+    text-decoration: underline;
+}
 
-    /* Improve spacing between fields using gap if form is flex container */
-    .auth-page .container.card form {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
+/* Today's Appointments Styles */
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+}
 
-    /* Button layout: inline on wide screens, stacked on narrow */
-    .auth-page .container.card .btn-group-inline {
-        display: flex;
-        gap: 0.6rem;
-        flex-wrap: wrap;
-    }
+.appointment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+    transition: background 0.3s;
+}
 
-    /* subtle inner highlight */
-    .auth-page .container.card::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        border-radius: 14px;
-        pointer-events: none;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
-    }
+.appointment-item:hover {
+    background: #f1f5f9;
+}
 
-    /* make sure the button isn't covered and accepts pointer events */
-    .auth-page .container.card button.btn.btn-primary,
-    .auth-page .container.card .btn.btn-primary {
-        pointer-events: auto !important;
-        z-index: 3; /* above potential overlays */
-    }
+.appointment-item:last-child {
+    margin-bottom: 0;
+}
 
-    /* Shared button behavior: apply consistent transitions and interaction for primary and secondary */
-    .auth-page .container.card .btn {
-        transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
-        pointer-events: auto !important;
-        z-index: 3;
-        -webkit-tap-highlight-color: transparent;
-    }
-    .auth-page .container.card .btn:hover,
-    .auth-page .container.card .btn:focus {
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.16) !important;
-    }
-    .auth-page .container.card .btn:active {
-        transform: translateY(0) scale(0.995);
-    }
+.appointment-info h4 {
+    font-size: 1rem;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
 
+.appointment-info p {
+    font-size: 0.85rem;
+    color: #64748b;
+}
 
-    /* Apply same translucent + interactive rules to the reset/secondary button */
-    .auth-page .container.card .btn-secondary {
-        background-color: rgba(255,255,255,0.08) !important;
-        color: #fff !important;
-        border-color: rgba(255,255,255,0.12) !important;
-        transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
-    }
-    .auth-page .container.card .btn-secondary:hover,
-    .auth-page .container.card .btn-secondary:focus {
-        background-color: rgba(255,255,255,0.12) !important;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(0,0,0,0.12) !important;
-    }
-    .auth-page .container.card .btn-secondary:active {
-        transform: translateY(0) scale(0.995);
-    }
-    .auth-page .container.card .btn.btn-secondary {
-        pointer-events: auto !important;
-        z-index: 3;
-    }
+.appointment-time {
+    text-align: right;
+}
 
-    /* alerts radius and spacing to match card */
-    .auth-page .container.card .alert {
-        border-radius: 8px;
-        padding: 0.6rem 0.9rem;
-    }
+.time {
+    font-weight: 700;
+    color: #3b82f6;
+    font-size: 0.95rem;
+}
 
-    .auth-page .alert {
-        margin-top: 0.25rem;
-        margin-bottom: 0.5rem;
-    }
+.department {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.25rem;
+}
 
-    /* translucent alerts inside the auth card */
-    .auth-page .container.card .alert {
-        background: rgba(255,255,255,0.12); /* light translucent base */
-        color: #fff; /* keep text white for contrast */
-        border: 1px solid rgba(255,255,255,0.08);
-    }
+/* Quick Actions Styles */
+.quick-actions {
+    display: grid;
+    gap: 0.75rem;
+}
 
-    .auth-page .container.card .alert-danger {
-        background: rgba(200, 60, 60, 0.12);
-    }
+.action-btn {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
 
-    .auth-page .container.card .alert-success {
-        background: rgba(80, 180, 120, 0.12);
-    }
-    
-    /* Force login page footer link to white for contrast */
-    .auth-page .container.card .card-footer a {
-        color: #fff !important;
-        text-decoration: underline;
-        font-weight: 600;
-    }
-    .auth-page .container.card .card-footer a:hover,
-    .auth-page .container.card .card-footer a:focus {
-        color: #fff !important;
-        text-decoration: none;
-    }
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
 
-    /* ============ Site-wide Theme Overrides ============ */
-    /* General page container/card styles to match auth cards */
-    /* Cards use translucent card-bg by default but inherit text color from context.
-       Avoid forcing white text globally so cards remain readable on light pages. */
-    .card, .container.card {
-        background: var(--card-bg) !important;
-        color: inherit;
-        border: 1px solid var(--card-border) !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.22) !important;
-        backdrop-filter: blur(6px) !important;
-        border-radius: 12px;
-    }
+.action-btn.secondary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
 
-    /* Navbars: darker translucent bar with subtle border */
-    .navbar, header.navbar {
-        background: rgba(6,32,62,0.82) !important;
-        color: var(--muted-white) !important;
-        border-bottom: 1px solid rgba(255,255,255,0.03) !important;
-        backdrop-filter: blur(4px) !important;
-    }
-    .navbar .nav-link, .navbar a {
-        color: var(--muted-white) !important;
-    }
-    .navbar .nav-link:hover, .navbar a:hover {
-        color: #fff !important;
-        opacity: 0.95;
-    }
+.action-btn.secondary:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
 
-    /* Tables: clean, subtle separators and readable text */
-    table.table {
-        background: transparent;
-        color: #fff;
-        border-collapse: collapse;
-    }
-    table.table thead th {
-        color: var(--muted-white);
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        background: rgba(255,255,255,0.02);
-    }
-    table.table tbody td {
-        border-bottom: 1px dashed rgba(255,255,255,0.04);
-        vertical-align: middle;
-    }
+/* Recent Activity Styles */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
-    /* Forms: inputs that match the card look across the site */
-    input.form-control, select.form-select, textarea.form-control {
-        background: var(--input-bg) !important;
-        color: #fff !important;
-        border: 1px solid var(--card-border) !important;
-        border-radius: 8px !important;
-        padding: 0.5rem 0.7rem !important;
-    }
-    input.form-control::placeholder, textarea.form-control::placeholder {
-        color: var(--muted-white) !important;
-        opacity: 0.9;
-    }
+.activity-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
 
-    label.form-label, .form-text {
-        color: var(--muted-white) !important;
-    }
+.activity-item:hover {
+    background: #f1f5f9;
+}
 
-    /* Buttons: primary and outline variants tuned for contrast */
-    .btn-primary {
-        background-color: var(--accent) !important;
-        border-color: var(--accent-dark) !important;
-        color: #fff !important;
-        box-shadow: 0 6px 18px rgba(30,115,190,0.12);
-    }
-    .btn-primary:hover, .btn-primary:focus {
-        background-color: var(--accent-dark) !important;
-        transform: translateY(-1px);
-    }
-    .btn-outline-secondary {
-        color: var(--muted-white) !important;
-        border-color: rgba(255,255,255,0.08) !important;
-        background: transparent !important;
-    }
-    .btn-outline-secondary:hover {
-        background: rgba(255,255,255,0.03) !important;
-    }
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
 
-    /* Alerts inside cards: maintain translucency and readable text */
-    .alert {
-        background: rgba(255,255,255,0.08) !important;
-        color: #fff !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
-        border-radius: 8px !important;
-    }
-    .alert-danger { background: rgba(200,60,60,0.12) !important; }
-    .alert-success { background: rgba(80,180,120,0.12) !important; }
+.activity-icon.blue { 
+    background: #dbeafe; 
+    color: #3b82f6; 
+}
 
-    /* Modals: dark translucent backdrop and cozy dialog */
-    .modal-content {
-        background: linear-gradient(180deg, rgba(8,34,68,0.95), rgba(6,28,56,0.92)) !important;
-        color: var(--muted-white) !important;
-        border: 1px solid rgba(255,255,255,0.04) !important;
-        box-shadow: 0 18px 40px rgba(0,0,0,0.48) !important;
-        border-radius: 12px !important;
-    }
-    .modal-backdrop.show {
-        background: rgba(3,10,27,0.6) !important;
-        backdrop-filter: blur(3px) !important;
-    }
+.activity-icon.green { 
+    background: #d1fae5; 
+    color: #10b981; 
+}
 
-    /* Small utility: ensure main content has left padding to avoid sidebar overlap on desktop */
-    @media (min-width: 768px) {
-        main, .container-fluid.main-content {
-            padding-left: 90px; /* sidebar compact width + small gap */
-            transition: padding-left 0.3s ease;
-        }
-        .sidebar.expanded ~ main, .sidebar.expanded ~ .container-fluid.main-content {
-            padding-left: 260px; /* expanded sidebar + gap */
-        }
-    }
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .stat-card h3 {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        
-        .stat-card .value {
-            font-size: 32px;
-            font-weight: 700;
-            color: #212529;
-            margin-bottom: 10px;
-        }
-        
-        .stat-card .change {
-            font-size: 14px;
-            color: #28a745;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .stat-card .change svg {
-            width: 14px;
-            height: 14px;
-        }
-        
-        .stat-card .change.negative {
-            color: #dc3545;
-        }
-        .stat-card .change.negative svg {
-            transform: rotate(180deg);
-        }
-    /* Stat card icons: normalize to 14x14 and align with text */
-    .stat-card svg, .stat-card .change svg {
-        width: 14px !important;
-        height: 14px !important;
-        vertical-align: middle;
-        margin-right: 6px;
-        display: inline-block;
-    }
+.activity-icon.orange { 
+    background: #fef3c7; 
+    color: #f59e0b; 
+}
 
-    /* ============ Dashboard UI ============ */
-    .doctor-dashboard {
-        padding: 2rem 1.25rem 3rem 1.25rem;
-        min-height: calc(100vh - 80px);
-        /* page-level text should be dark on light backgrounds; stat-cards override to white */
-        color: rgba(6,30,54,0.95);
-    }
+.activity-content {
+    flex: 1;
+}
 
-    .doctor-dashboard .dashboard-header {
-        max-width: 1200px;
-        margin: 0 auto 1.25rem auto;
-        padding: 0.5rem 0.75rem;
-    }
-    .doctor-dashboard .dashboard-header h1 {
-        margin: 0 0 0.25rem 0;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: var(--accent-dark);
-        letter-spacing: -0.2px;
-    }
-    .doctor-dashboard .dashboard-header p {
-        margin: 0;
-        color: rgba(9,34,62,0.62);
-        opacity: 0.95;
-    }
+.activity-content h4 {
+    font-size: 0.95rem;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
 
-    .doctor-dashboard .stats-cards {
-        max-width: 1200px;
-        margin: 1rem auto 0 auto;
+.activity-content p {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* Content Grid Layout (if using the 2-column layout) */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Responsive tweaks */
+@media (max-width: 575.98px) {
+    .doctor-dashboard { padding: 1rem; }
+    .doctor-dashboard .dashboard-header h1 { font-size: 1.25rem; }
+    .doctor-dashboard .stat-card { padding: 0.9rem; }
+    .doctor-dashboard .stat-card .value { font-size: 1.45rem; }
+}
+
+/* Light card styles for Today/Quick Actions/Recent Activity panels */
+.doctor-dashboard .card {
+    background: #fff !important;
+    color: rgba(6,30,54,0.95) !important;
+    border: 1px solid rgba(12,48,84,0.06) !important;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(12,36,68,0.06);
+    padding: 16px;
+    margin: 1rem 0;
+}
+
+.doctor-dashboard .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.doctor-dashboard .card-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: rgba(6,30,54,0.9);
+}
+.doctor-dashboard .card-action {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.appointments-list .appointment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: rgba(30,115,190,0.03);
+    margin-bottom: 10px;
+    border-left: 4px solid rgba(30,115,190,0.18);
+}
+.appointments-list .appointment-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 0.98rem;
+    font-weight: 700;
+}
+.appointments-list .appointment-info p {
+    margin: 0;
+    color: rgba(6,30,54,0.65);
+    font-size: 0.85rem;
+}
+.appointments-list .appointment-time { text-align: right; }
+.appointments-list .time { font-weight: 700; color: var(--accent); }
+.appointments-list .department { font-size: 0.82rem; color: rgba(6,30,54,0.6); }
+
+.quick-actions { display: flex; flex-direction: column; gap: 10px; }
+.action-btn { background: linear-gradient(180deg,#2b8ae2,#1e73be); color: #fff; border: none; padding: 10px 12px; border-radius: 8px; font-weight: 700; box-shadow: 0 8px 18px rgba(30,115,190,0.08); cursor: pointer; }
+.action-btn.secondary { background: linear-gradient(180deg,#2bb673,#1aa060); }
+
+.activity-list .activity-item { display:flex; gap: 12px; align-items:flex-start; padding: 12px; border-radius: 8px; background: rgba(6,30,54,0.03); margin-bottom: 10px; }
+.activity-icon { width:44px; height:44px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.activity-icon.blue { background: linear-gradient(180deg, #e8f4ff, #d9eeff); color:#1766b6; }
+.activity-icon.green { background: linear-gradient(180deg, #e9f9ef, #dff3e6); color:#198c4a; }
+.activity-icon.orange { background: linear-gradient(180deg, #fff6e8, #fff1d9); color:#d97a00; }
+.activity-content h4 { margin:0; font-size:0.96rem; font-weight:700; }
+.activity-content p { margin:0; color: rgba(6,30,54,0.6); font-size:0.85rem; }
+
+/* Responsive two-column layout for appointment + quick actions */
+@media (min-width: 992px) {
+    .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 1rem;
-        align-items: stretch;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        align-items: start;
     }
-
-    .doctor-dashboard .stat-card {
-        padding: 1rem 1rem;
-        border-radius: 12px;
-        /* stronger dark translucent background for legibility */
-        background: linear-gradient(180deg, rgba(6,30,54,0.92), rgba(8,34,68,0.9)) !important;
-        border: 1px solid rgba(255,255,255,0.06) !important;
-        box-shadow: 0 14px 36px rgba(3,9,30,0.46) !important;
-        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        color: #fff; /* keep stat card content readable */
-        backdrop-filter: blur(6px);
+    /* Make the activity card span both columns below */
+    .dashboard-grid .activity-card {
+        grid-column: 1 / -1;
+        margin-top: 6px;
     }
+}
 
-    .doctor-dashboard .stat-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 28px 56px rgba(3,9,30,0.52);
-    }
-
-    .doctor-dashboard .stat-card h3 {
-        margin: 0 0 0.5rem 0;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: rgba(255,255,255,0.95);
-        opacity: 0.95;
-        text-transform: none;
-    }
-
-    .doctor-dashboard .stat-card .value {
-        font-size: 1.95rem;
-        font-weight: 800;
-        color: #fff;
-        margin-bottom: 0.5rem;
-        letter-spacing: -0.5px;
-    }
-
-    .doctor-dashboard .stat-card .change {
-        font-size: 0.85rem;
-        color: rgba(88, 185, 120, 0.98); /* green */
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        opacity: 0.95;
-    }
-
-    .doctor-dashboard .stat-card .change.negative {
-        color: rgba(255,100,100,0.98); /* red for negative */
-    }
-
-    /* Ensure inline svgs inherit text color and negative svgs rotate */
-    .doctor-dashboard .stat-card .change svg,
-    .stat-card .change svg {
-        stroke: currentColor;
-        fill: none;
-        transition: transform 160ms ease, stroke 160ms ease;
-        transform-box: fill-box;
-        transform-origin: center;
-    }
-
-    .doctor-dashboard .stat-card .change.negative svg,
-    .stat-card .change.negative svg {
-        transform: rotate(180deg);
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 575.98px) {
-        .doctor-dashboard { padding: 1rem; }
-        .doctor-dashboard .dashboard-header h1 { font-size: 1.25rem; }
-        .doctor-dashboard .stat-card { padding: 0.9rem; }
-        .doctor-dashboard .stat-card .value { font-size: 1.45rem; }
-    }
-
+@media (max-width: 991.98px) {
+    .dashboard-grid { display: block; }
+    .dashboard-grid .activity-card { margin-top: 8px; }
+}

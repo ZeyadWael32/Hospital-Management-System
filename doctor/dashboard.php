@@ -13,7 +13,7 @@ $stats = get_dashboard_stats($conn, $doctor_id);
 $title = "Dashboard";
 include __DIR__ . '/../includes/header.php';
 include __DIR__ . '/../includes/sidebar.php';
-
+include __DIR__ . '/../includes/navbar.php';
 ?>
 
 <main class="doctor-dashboard">

@@ -3,6 +3,7 @@ require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ .'/../functions/auth.php';
 
 $title = "Login";
+$auth_page = true;
 include __DIR__ . '/../includes/header.php';
 
 $message = "";

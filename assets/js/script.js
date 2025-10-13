@@ -24,7 +24,7 @@ function showPasswordModal(modalId) {
     }
 }
 
-// Sidebar toggle removed per user request. Sidebar will always be visible.
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -41,11 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.replaceState({}, '', url.toString());
     }
 
-    // Sidebar toggle removed — no persisted state to restore.
-
-    // Toggle button removed from markup — nothing to wire here.
-
-    // No overlay behavior needed since sidebar is always visible.
 });
 
 

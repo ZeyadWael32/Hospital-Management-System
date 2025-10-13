@@ -1,7 +1,5 @@
 <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
-<!-- Sidebar -->
 <nav class="sidebar expanded" id="sidebar" aria-label="Main sidebar">
-    <!-- Sidebar is permanently shown; toggle removed per user request -->
     
     <!-- Dashboard -->
     <a href="dashboard.php" class="nav-item <?= $current_page === 'dashboard.php' ? 'active' : '' ?>" role="link" <?= $current_page === 'dashboard.php' ? 'aria-current="page"' : '' ?> >
@@ -27,12 +25,19 @@
         </svg>
         <span>Medical Records</span>
     </a>
-    
+
+    <a href="reports.php" class="nav-item <?= $current_page === 'reports.php' ? 'active' : '' ?>" role="link" <?= $current_page === 'reports.php' ? 'aria-current="page"' : '' ?> >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h10M7 16h6M4 6h10l4 4v8a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1z" />
+        </svg>
+        <span>Reports</span>
+    </a>
     
     <!-- Profile -->
     <a href="profile.php" class="nav-item <?= $current_page === 'profile.php' ? 'active' : '' ?>" role="link" <?= $current_page === 'profile.php' ? 'aria-current="page"' : '' ?> >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11c1.657 0 3 1.343 3 3v1a1 1 0 01-1 1H6a1 1 0 01-1-1v-1c0-1.657 1.343-3 3-3h8z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7a3 3 0 100-6 3 3 0 000 6z" />
         </svg>
         <span>Profile</span>
     </a>

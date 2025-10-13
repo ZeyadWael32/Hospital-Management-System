@@ -407,7 +407,7 @@ body {
 }
 table.table {
     background: transparent;
-    color: #fff;
+    color: #fff; /* default for dark headers/overlays */
     border-collapse: collapse;
 }
 table.table thead th {
@@ -418,6 +418,59 @@ table.table thead th {
 table.table tbody td {
     border-bottom: 1px dashed rgba(255,255,255,0.04);
     vertical-align: middle;
+}
+
+/* Override table colors when inside light cards or the dashboard so they are readable */
+.card table.table,
+.doctor-dashboard table.table,
+.doctor-dashboard .card table.table {
+    color: rgba(6,30,54,0.95); /* dark text for readability */
+}
+.card table.table thead th,
+.doctor-dashboard table.table thead th,
+.doctor-dashboard .card table.table thead th {
+    color: rgba(6,30,54,0.85);
+    border-bottom: 1px solid rgba(6,30,54,0.06);
+    background: rgba(255,255,255,0.03);
+}
+.card table.table tbody td,
+.doctor-dashboard table.table tbody td,
+.doctor-dashboard .card table.table tbody td {
+    border-bottom: 1px dashed rgba(6,30,54,0.06);
+    color: rgba(6,30,54,0.8);
+}
+
+/* Modern table visuals */
+.table-responsive-custom {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(12,36,68,0.04);
+}
+.table-custom {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+.table-custom thead th {
+    text-align: left;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: rgba(6,30,54,0.85);
+    background: rgba(245,247,250,0.8);
+}
+.table-custom tbody td {
+    padding: 12px 18px;
+    vertical-align: middle;
+    color: rgba(6,30,54,0.85);
+}
+.table-custom tbody tr:nth-child(odd) td { background: rgba(248,249,250,0.8); }
+.table-custom tbody tr:hover td { background: rgba(235,238,240,0.95); }
+
+/* Small screens: compress padding */
+@media (max-width: 576px) {
+    .table-custom thead th, .table-custom tbody td { padding: 10px 12px; }
 }
 input.form-control, select.form-select, textarea.form-control {
     background: var(--input-bg) !important;

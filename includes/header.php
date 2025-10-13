@@ -8,5 +8,4 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
-<?php include __DIR__ . '/navbar.php'; ?>
+<body<?php if (!empty($auth_page)) echo ' class="auth-layout"'; ?>>

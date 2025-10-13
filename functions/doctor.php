@@ -309,4 +309,31 @@ function get_dashboard_stats($conn, $doctor_id) {
 
     return $stats;
 }
+
+function get_doctor_reports($conn, $doctor_id) {
+    $sql = "
+    SELECT r.id AS report_id, u.name AS patient_name, r.diagnosis, r.treatment, r.record_date, a.id AS appointment_id
+    FROM medical_records r
+    INNER JOIN appointments a ON r.appointment_id = a.id
+    INNER JOIN patients p ON r.patient_id = p.id
+    INNER JOIN users u ON p.user_id = u.id
+    WHERE a.doctor_id = ?
+    ORDER BY r.record_date DESC
+    ";
+
+    if ($stmt = mysqli_prepare($conn, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $doctor_id);
+        if (mysqli_stmt_execute($stmt)) {
+            $result = mysqli_stmt_get_result($stmt);
+            $reports = [];
+            while ($row = mysqli_fetch_assoc($result)) {
+                $reports[] = $row;
+            }
+            mysqli_stmt_close($stmt);
+            return $reports;
+        }
+        mysqli_stmt_close($stmt);
+    }
+    return [];
+}
 ?>
